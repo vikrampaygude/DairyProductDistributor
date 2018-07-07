@@ -24,9 +24,6 @@ public class ProductQuantityPrice {
     @Column
     private Double quantity;
 
-    @Column
-    private String unitOfMeasure;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;

@@ -15,7 +15,6 @@ public class ProductQuantityPriceDTO {
     private Double sellingPrice;
     private Double purchasePrice;
     private Double quantity;
-    private String unitOfMeasure;
     private Long productId;
     private String productName;
 

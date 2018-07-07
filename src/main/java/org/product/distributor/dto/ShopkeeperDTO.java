@@ -14,5 +14,10 @@ public class ShopkeeperDTO {
     private Long id;
     private String name;
     private String address;
+    private String distributorAreaName;
+    private Long distributorAreaId;
+    private String distributorName;
+    private Long distributorId;
+
 
 }

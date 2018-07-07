@@ -23,9 +23,19 @@ public class Product {
     @Size(max = 100)
     private String name;
 
+    @Column
+    @Size(max = 20)
+    private String unitOfMeasure;
+
     @ManyToOne
     @JoinColumn(name = "product_brand_id")
     private ProductBrand productBrand;
+
+    @Column
+    private Double sellingPrice;
+
+    @Column
+    private Double purchasePrice;
 
     @OneToMany(
             mappedBy = "product",

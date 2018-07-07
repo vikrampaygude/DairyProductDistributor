@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by vikram on 05/07/18.
  */
+@CrossOrigin
 @RestController
 @RequestMapping("api/product")
 public class ProductRestController {
@@ -36,8 +37,7 @@ public class ProductRestController {
     }
 
     @GetMapping("/{id}")
-    public List<ProductDTO> getProduct(){
-
-        return productService.getAll();
+    public ProductDTO getProduct(@PathVariable Long id){
+        return productService.getById(id);
     }
 }

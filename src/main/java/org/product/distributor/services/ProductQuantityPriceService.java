@@ -30,6 +30,14 @@ public class ProductQuantityPriceService {
         return productQuantityPriceDTOList;
     }
 
+    public List<ProductQuantityPriceDTO> getAllByProductId(Long productId){
+        List<ProductQuantityPriceDTO> productQuantityPriceDTOList = new ArrayList<>();
+        productQuantityPriceRepo.getAllByProducId(productId).forEach(d -> productQuantityPriceDTOList.add(productQuantityPriceMapper.getProductQuantityPriceDTO(d)));
+        return productQuantityPriceDTOList;
+    }
+
+
+
     public ProductQuantityPriceDTO getById(Long id){
         return productQuantityPriceMapper.getProductQuantityPriceDTO(productQuantityPriceRepo.findById(id).get());
     }

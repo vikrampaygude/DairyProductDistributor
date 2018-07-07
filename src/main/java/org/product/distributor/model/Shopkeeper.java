@@ -24,4 +24,7 @@ public class Shopkeeper {
     @Size(max = 256)
     private String address;
 
+    @OneToOne
+    private DistributorArea distributorArea;
+
 }

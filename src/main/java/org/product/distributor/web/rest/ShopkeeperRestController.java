@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by vikram on 05/07/18.
  */
+@CrossOrigin
 @RestController
 @RequestMapping("api/shopkeeper")
 public class ShopkeeperRestController {

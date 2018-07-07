@@ -2,6 +2,8 @@ package org.product.distributor.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by vikram on 04/07/18.
  *
@@ -15,5 +17,8 @@ public class ProductDTO {
     private String brandName;
     private Double sellingPrice;
     private Double purchasePrice;
+    private String unitOfMeasure;
+
+    private List<ProductQuantityPriceDTO> productQuantityPriceDTOList;
 
 }

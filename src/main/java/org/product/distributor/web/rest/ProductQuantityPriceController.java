@@ -1,4 +1,4 @@
-package org.distributor.productQuantityPrice.web.rest;
+package org.product.distributor.web.rest;
 
 import org.product.distributor.dto.ProductQuantityPriceDTO;
 import org.product.distributor.services.ProductQuantityPriceService;
@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Created by vikram on 05/07/18.
  */
+@CrossOrigin
 @RestController
 @RequestMapping("api/product-quantity-price")
 public class ProductQuantityPriceController {
@@ -29,17 +30,17 @@ public class ProductQuantityPriceController {
         productQuantityPriceService.updateProductQuantityPrice(productQuantityPriceDTO);
     }
 
-    @GetMapping("/list")
-    public List<ProductQuantityPriceDTO> getProductQuantityPrices(){
 
-        return productQuantityPriceService.getAll();
+    @GetMapping("{productId}/list")
+    public List<ProductQuantityPriceDTO> getProductQuantityPrices(@PathVariable Long productId){
+        return productQuantityPriceService.getAllByProductId(productId);
     }
 
     @GetMapping("/{id}")
-    public List<ProductQuantityPriceDTO> getProductQuantityPrice(){
-
-        return productQuantityPriceService.getAll();
+    public ProductQuantityPriceDTO getProductQuantityPrice(@PathVariable Long id){
+        return productQuantityPriceService.getById(id);
     }
+
 
 
 

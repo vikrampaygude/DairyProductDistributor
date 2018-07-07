@@ -30,7 +30,6 @@ public class ProductQuantityPriceMapperTest {
         productQuantityPrice.setSellingPrice(42.50);
         productQuantityPrice.setPurchasePrice(40.50);
         productQuantityPrice.setQuantity(1.0);
-        productQuantityPrice.setUnitOfMeasure("Liter");
 
         //when
         ProductQuantityPriceDTO productQuantityPriceDTO = productQuantityPriceMapper.getProductQuantityPriceDTO(productQuantityPrice);
@@ -39,10 +38,8 @@ public class ProductQuantityPriceMapperTest {
         Assert.assertEquals(productQuantityPrice.getQuantity(), productQuantityPriceDTO.getQuantity());
         Assert.assertEquals(productQuantityPrice.getPurchasePrice(), productQuantityPriceDTO.getPurchasePrice());
         Assert.assertEquals(productQuantityPrice.getSellingPrice(), productQuantityPriceDTO.getSellingPrice());
-        Assert.assertEquals(productQuantityPrice.getUnitOfMeasure(), productQuantityPriceDTO.getUnitOfMeasure());
         Assert.assertEquals(productQuantityPrice.getProduct().getId(), productQuantityPriceDTO.getProductId());
         Assert.assertEquals(productQuantityPrice.getProduct().getName(), productQuantityPriceDTO.getProductName());
-
 
     }
 
@@ -55,7 +52,6 @@ public class ProductQuantityPriceMapperTest {
         productQuantityPriceDTO.setPurchasePrice(40.50);
         productQuantityPriceDTO.setSellingPrice(42.50);
         productQuantityPriceDTO.setQuantity(1.0);
-        productQuantityPriceDTO.setUnitOfMeasure("liter");
         productQuantityPriceDTO.setProductName("Gaiche Dudh");
         productQuantityPriceDTO.setProductId(1000L);
 
@@ -67,7 +63,6 @@ public class ProductQuantityPriceMapperTest {
         Assert.assertEquals(productQuantityPriceDTO.getPurchasePrice(), productQuantityPrice.getPurchasePrice());
         Assert.assertEquals(productQuantityPriceDTO.getSellingPrice(), productQuantityPrice.getSellingPrice());
         Assert.assertEquals(productQuantityPriceDTO.getQuantity(), productQuantityPrice.getQuantity());
-        Assert.assertEquals(productQuantityPriceDTO.getUnitOfMeasure(), productQuantityPrice.getUnitOfMeasure());
         Assert.assertEquals(productQuantityPriceDTO.getProductId(), productQuantityPrice.getProduct().getId());
         Assert.assertEquals(productQuantityPriceDTO.getProductName(), productQuantityPrice.getProduct().getName());
 

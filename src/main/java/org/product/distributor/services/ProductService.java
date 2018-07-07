@@ -26,23 +26,23 @@ public class ProductService {
 
     public List<ProductDTO> getAll(){
         List<ProductDTO> productDTOList = new ArrayList<>();
-        productRepo.findAll().forEach(d -> productDTOList.add(productMapper.getProductDTO(d)));
+        productRepo.findAll().forEach(d -> productDTOList.add(productMapper.getProductDTO(d,d.getProductQuantityPriceList())));
         return productDTOList;
     }
 
     public ProductDTO getById(Long id){
-        return productMapper.getProductDTO(productRepo.findById(id).get());
+        return productMapper.getProductDTO(productRepo.findById(id).get(), productRepo.findById(id).get().getProductQuantityPriceList());
     }
 
     public Product saveProduct(ProductDTO productDTO){
-        return productRepo.save(productMapper.getProduct(productDTO));
+        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList()));
     }
 
     public Product updateProduct(ProductDTO productDTO){
         if(productDTO.getId() == null || productDTO.getId() ==0)
             throw new IllegalArgumentException();
 
-        return productRepo.save(productMapper.getProduct(productDTO));
+        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList()));
     }
 
 }
