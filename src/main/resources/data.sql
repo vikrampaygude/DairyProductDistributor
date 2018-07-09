@@ -33,7 +33,15 @@ values
 , (5, 'Gaiche Dudh','liter', 42.50, 40.00, 2)
 , (6, 'Tup ', 'kg', 150.0, 170.00, 2);
 
-insert into shopkeeper values (1,'Hanuman Shopee','Katraj');
-insert into shopkeeper values (2,'Ashapura Super Market','Sukhsagar');
-insert into shopkeeper values (3,'Amit Vharaities','Katraj');
+insert into shopkeeper (id, name, address, distributor_area_id)
+values (1,'Hanuman Shopee','Katraj', 1),
+(2,'Ashapura Super Market','Sukhsagar', 2),
+(3,'Amit Vharaities','Katraj', 3);
 
+insert into DISTRIBUTOR_AREA_PRODUCT (PRODUCT_ID, DISTRIBUTOR_AREA_ID  )
+values (1,1),
+(2,1),
+(3,1),
+(4,2),
+(5,2),
+(6,2);

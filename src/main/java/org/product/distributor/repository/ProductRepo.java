@@ -2,7 +2,10 @@ package org.product.distributor.repository;
 
 import org.product.distributor.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Created by vikram on 04/07/18.
@@ -10,5 +13,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProductRepo extends JpaRepository<Product, Long> {
+
+    List<Product> findByDistributorAreaList_Id(Long id);
 
 }

@@ -18,7 +18,7 @@ public class OrderProductDTO {
     private String productName;
     private Double sellingPrice;
     private Double quantity;
-    private String unitOfMeasure;
     private Long orderId;
+    private Long customSellingPrice;
 
 }

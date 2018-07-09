@@ -37,8 +37,8 @@ public class ShopkeeperRestController {
     }
 
     @GetMapping("/{id}")
-    public List<ShopkeeperDTO> getShopkeeper(){
+    public ShopkeeperDTO getShopkeeper(@PathVariable Long id){
 
-        return shopkeeperService.getAll();
+        return shopkeeperService.getById(id);
     }
 }

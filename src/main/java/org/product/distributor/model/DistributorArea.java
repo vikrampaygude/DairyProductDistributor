@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vikram on 04/07/18.
@@ -23,5 +25,8 @@ public class DistributorArea {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "distributor_id")
     private Distributor distributor;
+
+    @ManyToMany(mappedBy = "distributorAreaList")
+    private List<Product> productList = new ArrayList<>();
 
 }

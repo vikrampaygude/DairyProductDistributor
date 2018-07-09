@@ -26,23 +26,23 @@ public class ProductService {
 
     public List<ProductDTO> getAll(){
         List<ProductDTO> productDTOList = new ArrayList<>();
-        productRepo.findAll().forEach(d -> productDTOList.add(productMapper.getProductDTO(d,d.getProductQuantityPriceList())));
+        productRepo.findAll().forEach(d -> productDTOList.add(productMapper.getProductDTO(d,d.getProductQuantityPriceList(), d.getDistributorAreaList())));
         return productDTOList;
     }
 
     public ProductDTO getById(Long id){
-        return productMapper.getProductDTO(productRepo.findById(id).get(), productRepo.findById(id).get().getProductQuantityPriceList());
+        return productMapper.getProductDTO(productRepo.findById(id).get(), productRepo.findById(id).get().getProductQuantityPriceList(), productRepo.findById(id).get().getDistributorAreaList());
     }
 
     public Product saveProduct(ProductDTO productDTO){
-        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList()));
+        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList(),productDTO.getDistributorAreaDTOList()));
     }
 
     public Product updateProduct(ProductDTO productDTO){
         if(productDTO.getId() == null || productDTO.getId() ==0)
             throw new IllegalArgumentException();
 
-        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList()));
+        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList(), productDTO.getDistributorAreaDTOList()));
     }
 
 }

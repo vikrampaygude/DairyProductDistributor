@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,14 @@ public class Product {
 
     @Column
     private Double purchasePrice;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "Distributor_Area_Product",
+            joinColumns = { @JoinColumn(name = "product_id") },
+            inverseJoinColumns = { @JoinColumn(name = "distributor_area_id") }
+    )
+    List<DistributorArea> distributorAreaList = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "product",

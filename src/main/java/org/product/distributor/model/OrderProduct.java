@@ -25,11 +25,18 @@ public class OrderProduct {
     @Column
     private Double quantity;
 
-    @Column
-    private String unitOfMeasure;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopkeeper_order_id")
     private ShopkeeperOrder shopkeeperOrder;
+
+    public static OrderProduct getObject(Product product, ShopkeeperOrder shopkeeperOrder){
+
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setProduct(product);
+        orderProduct.setShopkeeperOrder(shopkeeperOrder);
+
+        return orderProduct;
+    }
 
 }

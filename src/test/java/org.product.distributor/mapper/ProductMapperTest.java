@@ -3,11 +3,15 @@ package org.product.distributor.mapper;
 import com.sun.tools.javac.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.product.distributor.dto.DistributorAreaDTO;
 import org.product.distributor.dto.ProductDTO;
 import org.product.distributor.dto.ProductQuantityPriceDTO;
+import org.product.distributor.model.DistributorArea;
 import org.product.distributor.model.Product;
 import org.product.distributor.model.ProductBrand;
 import org.product.distributor.model.ProductQuantityPrice;
+
+import java.util.ArrayList;
 
 /**
  * Created by vikram on 04/07/18.
@@ -47,8 +51,20 @@ public class ProductMapperTest {
 
         product.setProductQuantityPriceList(List.of(productQuantityPrice, productQuantityPrice2));
 
+        DistributorArea distributorArea = new DistributorArea();
+        distributorArea.setId(1111L);
+        distributorArea.setName("Katraj");
+
+        DistributorArea distributorArea2 = new DistributorArea();
+        distributorArea2.setId(2222L);
+        distributorArea2.setName("Bibwewadi");
+
+        List<DistributorArea>  distributorAreaList = List.of(distributorArea, distributorArea2);
+
+        product.setDistributorAreaList(distributorAreaList);
+
         //when
-        ProductDTO productDTO = productMapper.getProductDTO(product, product.getProductQuantityPriceList());
+        ProductDTO productDTO = productMapper.getProductDTO(product, product.getProductQuantityPriceList(), distributorAreaList);
 
         //then
         Assert.assertEquals(product.getId(), productDTO.getId());
@@ -59,7 +75,7 @@ public class ProductMapperTest {
         Assert.assertEquals(product.getProductBrand().getId(), productDTO.getBrandId());
         Assert.assertEquals(product.getProductBrand().getName(), productDTO.getBrandName());
         Assert.assertEquals(product.getProductQuantityPriceList().size(), productDTO.getProductQuantityPriceDTOList().size());
-
+        Assert.assertEquals(product.getDistributorAreaList().size(), productDTO.getDistributorAreaDTOList().size());
     }
 
     @Test
@@ -89,11 +105,22 @@ public class ProductMapperTest {
         productQuantityPriceDTO2.setProductId(productDTO.getId());
 
         List<ProductQuantityPriceDTO> list = List.of(productQuantityPriceDTO, productQuantityPriceDTO2);
-
         productDTO.setProductQuantityPriceDTOList(list);
 
+        DistributorAreaDTO distributorAreaDTO = new DistributorAreaDTO();
+        distributorAreaDTO.setId(1111L);
+        distributorAreaDTO.setName("Katraj");
+
+        DistributorAreaDTO distributorAreaDTO2 = new DistributorAreaDTO();
+        distributorAreaDTO2.setId(2222L);
+        distributorAreaDTO2.setName("Bibwewadi");
+
+        List<DistributorAreaDTO>  distributorAreaDTOList = List.of(distributorAreaDTO, distributorAreaDTO2);
+
+        productDTO.setDistributorAreaDTOList(distributorAreaDTOList);
+
         //when
-        Product product = productMapper.getProduct(productDTO,list);
+        Product product = productMapper.getProduct(productDTO,list, distributorAreaDTOList );
         //then
         Assert.assertEquals(productDTO.getId(), product.getId());
         Assert.assertEquals(productDTO.getName(), product.getName());
@@ -103,6 +130,7 @@ public class ProductMapperTest {
         Assert.assertEquals(productDTO.getBrandId(), product.getProductBrand().getId());
         Assert.assertEquals(productDTO.getBrandName(), product.getProductBrand().getName());
         Assert.assertEquals(productDTO.getProductQuantityPriceDTOList().size(), product.getProductQuantityPriceList().size());
+        Assert.assertEquals(product.getDistributorAreaList().size(), productDTO.getDistributorAreaDTOList().size());
 
     }
 }

@@ -4,8 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by vikram on 05/07/18.
@@ -35,6 +34,9 @@ public class ShopkeeperOrder {
     private Double dueAmount;
 
     @OneToOne
+    private DistributorArea distributorArea;
+
+    @OneToOne
     private Shopkeeper shopkeeper;
 
     @OneToMany(
@@ -42,6 +44,6 @@ public class ShopkeeperOrder {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<OrderProduct> orderProductList;
+    private List<OrderProduct> orderProductList;
 
 }

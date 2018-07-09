@@ -20,5 +20,6 @@ public class ProductDTO {
     private String unitOfMeasure;
 
     private List<ProductQuantityPriceDTO> productQuantityPriceDTOList;
+    private List<DistributorAreaDTO> distributorAreaDTOList;
 
 }

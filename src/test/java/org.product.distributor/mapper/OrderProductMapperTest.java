@@ -32,7 +32,6 @@ public class OrderProductMapperTest {
         orderProduct.setShopkeeperOrder(shopkeeperOrder);
         orderProduct.setQuantity(30.0);
         orderProduct.setSellingPrice(40.20);
-        orderProduct.setUnitOfMeasure("Liter");
 
         //when
         OrderProductDTO orderProductDTO = orderProductMapper.getOrderProductDTO(orderProduct);
@@ -41,7 +40,6 @@ public class OrderProductMapperTest {
         Assert.assertEquals(orderProduct.getId(), orderProductDTO.getId());
         Assert.assertEquals(orderProduct.getQuantity(), orderProductDTO.getQuantity());
         Assert.assertEquals(orderProduct.getSellingPrice(), orderProductDTO.getSellingPrice());
-        Assert.assertEquals(orderProduct.getUnitOfMeasure(), orderProductDTO.getUnitOfMeasure());
         Assert.assertEquals(orderProduct.getProduct().getId(), orderProductDTO.getProductId());
         Assert.assertEquals(orderProduct.getProduct().getName(), orderProductDTO.getProductName());
         Assert.assertEquals(orderProduct.getShopkeeperOrder().getId(), orderProductDTO.getOrderId());
@@ -60,7 +58,6 @@ public class OrderProductMapperTest {
         orderProductDTO.setProductName("Gai Dudh");
         orderProductDTO.setQuantity(50.0);
         orderProductDTO.setSellingPrice(40.50);
-        orderProductDTO.setUnitOfMeasure("Liter");
 
         //when
         OrderProduct orderProduct = orderProductMapper.getOrderProduct(orderProductDTO);
@@ -69,7 +66,6 @@ public class OrderProductMapperTest {
         Assert.assertEquals(orderProduct.getId(), orderProductDTO.getId());
         Assert.assertEquals(orderProduct.getQuantity(), orderProductDTO.getQuantity());
         Assert.assertEquals(orderProduct.getSellingPrice(), orderProductDTO.getSellingPrice());
-        Assert.assertEquals(orderProduct.getUnitOfMeasure(), orderProductDTO.getUnitOfMeasure());
         Assert.assertEquals(orderProduct.getProduct().getId(), orderProductDTO.getProductId());
         Assert.assertEquals(orderProduct.getProduct().getName(), orderProductDTO.getProductName());
         Assert.assertEquals(orderProduct.getShopkeeperOrder().getId(), orderProductDTO.getOrderId());
