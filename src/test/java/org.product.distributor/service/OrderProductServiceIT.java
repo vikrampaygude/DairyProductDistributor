@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.product.distributor.constant.ShopkeeperOrderStatus;
+import org.product.distributor.mapper.DailySellRowDataMapper;
 import org.product.distributor.mapper.OrderProductMapper;
+import org.product.distributor.mapper.ShopkeeperOrderMapper;
 import org.product.distributor.model.OrderProduct;
 import org.product.distributor.model.Product;
 import org.product.distributor.model.Shopkeeper;
@@ -15,6 +17,7 @@ import org.product.distributor.repository.ProductRepo;
 import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.product.distributor.repository.ShopkeeperRepo;
 import org.product.distributor.services.OrderProductService;
+import org.product.distributor.services.ShopkeeperOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -46,9 +49,17 @@ public class OrderProductServiceIT {
 
     private OrderProductService orderProductService;
 
+    private DailySellRowDataMapper dailySellRowDataMapper;
+
+    private ShopkeeperOrderService shopkeeperOrderService ;
+    private ShopkeeperOrderMapper shopkeeperOrderMapper = ShopkeeperOrderMapper.INSTANCE;
+
+
+
     @Before
     public void setUp(){
-        orderProductService = new OrderProductService(orderProductRepo, orderProductMapper,productRepo,shopkeeperRepo, shopkeeperOrderRepo);
+        shopkeeperOrderService = new ShopkeeperOrderService(shopkeeperOrderRepo, shopkeeperOrderMapper, orderProductRepo);
+        orderProductService = new OrderProductService(orderProductRepo, orderProductMapper,productRepo,shopkeeperRepo, shopkeeperOrderRepo, dailySellRowDataMapper, shopkeeperOrderService);
     }
 
 

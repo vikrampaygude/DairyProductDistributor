@@ -34,6 +34,8 @@ public class OrderProduct {
 
         OrderProduct orderProduct = new OrderProduct();
         orderProduct.setProduct(product);
+        orderProduct.setSellingPrice(product.getSellingPrice());
+        orderProduct.setQuantity(0.0);
         orderProduct.setShopkeeperOrder(shopkeeperOrder);
 
         return orderProduct;

@@ -2,9 +2,11 @@ package org.product.distributor.repository;
 
 import org.product.distributor.model.ShopkeeperOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,4 +25,8 @@ public interface ShopkeeperOrderRepo extends JpaRepository<ShopkeeperOrder, Long
     List<ShopkeeperOrder> findActiveByDistributorAreaAndDate(@Param("date") LocalDate date,@Param("distributorId") Long distributorId);
 
 
+    @Transactional
+    @Modifying
+    @Query("UPDATE ShopkeeperOrder so SET paidAmount=:paidAmount where id=:id")
+    void updatePaidAmount(@Param("id") Long id, @Param("paidAmount") Double paidAmount);
 }

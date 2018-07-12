@@ -26,6 +26,10 @@ public class Product {
 
     @Column
     @Size(max = 20)
+    private String shortName;
+
+    @Column
+    @Size(max = 20)
     private String unitOfMeasure;
 
     @ManyToOne
@@ -51,6 +55,6 @@ public class Product {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<ProductQuantityPrice> productQuantityPriceList;
+    private List<ProductQuantityPrice>  productQuantityPriceList;
 }
 

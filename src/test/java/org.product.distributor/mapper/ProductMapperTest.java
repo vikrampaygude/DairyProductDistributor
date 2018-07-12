@@ -28,6 +28,7 @@ public class ProductMapperTest {
         product.setId(111L);
         product.setName("Mhashiche Dudh");
         product.setUnitOfMeasure("Liter");
+        product.setShortName("MD");
 
         ProductBrand productBrand = new ProductBrand();
         productBrand.setId(1L);
@@ -69,6 +70,7 @@ public class ProductMapperTest {
         //then
         Assert.assertEquals(product.getId(), productDTO.getId());
         Assert.assertEquals(product.getName(), productDTO.getName());
+        Assert.assertEquals(product.getShortName(), productDTO.getShortName());
         Assert.assertEquals(product.getUnitOfMeasure(), productDTO.getUnitOfMeasure());
         Assert.assertEquals(product.getSellingPrice(), productDTO.getSellingPrice());
         Assert.assertEquals(product.getPurchasePrice(), productDTO.getPurchasePrice());
@@ -84,6 +86,7 @@ public class ProductMapperTest {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(111L);
         productDTO.setName("Mhashiche Dudh");
+        productDTO.setShortName("MD");
         productDTO.setBrandId(1L);
         productDTO.setBrandName("Chitale Bandu Mithaiwale");
         productDTO.setSellingPrice(42.50);
@@ -124,6 +127,7 @@ public class ProductMapperTest {
         //then
         Assert.assertEquals(productDTO.getId(), product.getId());
         Assert.assertEquals(productDTO.getName(), product.getName());
+        Assert.assertEquals(productDTO.getShortName(), product.getShortName());
         Assert.assertEquals(productDTO.getUnitOfMeasure(), product.getUnitOfMeasure());
         Assert.assertEquals(productDTO.getSellingPrice(), product.getSellingPrice());
         Assert.assertEquals(productDTO.getPurchasePrice(), product.getPurchasePrice());

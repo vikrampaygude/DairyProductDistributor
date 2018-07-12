@@ -13,6 +13,7 @@ public class ProductDTO {
 
     private Long id;
     private String name;
+    private String shortName;
     private Long brandId;
     private String brandName;
     private Double sellingPrice;

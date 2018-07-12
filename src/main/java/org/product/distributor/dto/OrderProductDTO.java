@@ -16,6 +16,9 @@ public class OrderProductDTO {
     private Long id;
     private Long productId;
     private String productName;
+    private String productShortName;
+    private String productBrandName;
+    private String productBrandShortName;
     private Double sellingPrice;
     private Double quantity;
     private Long orderId;

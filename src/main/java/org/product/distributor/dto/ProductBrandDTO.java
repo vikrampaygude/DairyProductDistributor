@@ -11,4 +11,5 @@ public class ProductBrandDTO {
 
     private Long id;
     private String name;
+    private String shortName;
 }

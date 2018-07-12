@@ -17,6 +17,9 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class ProductRepoIT {
+    @Test
+    public void findByDistributorAreaList_Id1() throws Exception {
+    }
 
     @Autowired
     private ProductRepo productRepo;

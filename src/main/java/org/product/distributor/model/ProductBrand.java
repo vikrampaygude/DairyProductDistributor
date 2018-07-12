@@ -22,10 +22,13 @@ public class ProductBrand {
     @Size(max = 100)
     private String name;
 
+    @Column
+    @Size(max = 20)
+    private String shortName;
+
     @OneToMany(
             mappedBy = "productBrand",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.ALL
     )
     List<Product> productList = new ArrayList<>();
 

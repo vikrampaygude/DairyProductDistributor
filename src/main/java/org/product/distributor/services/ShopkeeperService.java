@@ -1,13 +1,20 @@
 package org.product.distributor.services;
 
 import org.product.distributor.dto.ShopkeeperDTO;
+import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.mapper.ShopkeeperMapper;
+import org.product.distributor.mapper.ShopkeeperOrderMapper;
+import org.product.distributor.model.OrderProduct;
 import org.product.distributor.model.Shopkeeper;
+import org.product.distributor.model.ShopkeeperOrder;
+import org.product.distributor.repository.OrderProductRepo;
+import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.product.distributor.repository.ShopkeeperRepo;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by vikram on 05/07/18.
@@ -18,10 +25,12 @@ public class ShopkeeperService {
 
     private ShopkeeperRepo shopkeeperRepo;
     private ShopkeeperMapper shopkeeperMapper;
+    private ShopkeeperOrderRepo shopkeeperOrderRepo;
 
-    public ShopkeeperService(ShopkeeperRepo shopkeeperRepo, ShopkeeperMapper shopkeeperMapper) {
+    public ShopkeeperService(ShopkeeperRepo shopkeeperRepo, ShopkeeperMapper shopkeeperMapper, ShopkeeperOrderRepo shopkeeperOrderRepo) {
         this.shopkeeperRepo = shopkeeperRepo;
         this.shopkeeperMapper = shopkeeperMapper;
+        this.shopkeeperOrderRepo = shopkeeperOrderRepo;
     }
 
     public List<ShopkeeperDTO> getAll(){
@@ -44,5 +53,6 @@ public class ShopkeeperService {
 
         return shopkeeperRepo.save(shopkeeperMapper.getShopkeeper(shopkeeperDTO));
     }
+
 
 }

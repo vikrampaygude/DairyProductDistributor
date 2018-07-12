@@ -10,10 +10,10 @@ import java.util.Map;
  * Created by vikram on 07/07/18.
  */
 @Data
-public class DailySellGridRowDataDTO {
+public class DailySellGridDataDTO {
 
     private LocalDate date;
-    private DistributorDTO distributorDTO;
-    private Map<ShopkeeperOrderDTO, List<OrderProductDTO>> shopkeeperOrderDTOListMap;
+    List<DailySellRowDataDTO> dailySellRowDataDTOList;
 
 }
+

@@ -19,6 +19,7 @@ public class ProductBrandMapperTest {
         ProductBrand productBrand = new ProductBrand();
         productBrand.setId(101L);
         productBrand.setName("Chitale Bandhu Mithaiwale");
+        productBrand.setShortName("CBM");
 
         //when
         ProductBrandDTO productBrandDTO = productBrandMapper.getProductBrandDTO(productBrand);
@@ -26,6 +27,7 @@ public class ProductBrandMapperTest {
         //then
         Assert.assertEquals(productBrand.getId(), productBrandDTO.getId());
         Assert.assertEquals(productBrand.getName(), productBrandDTO.getName());
+        Assert.assertEquals(productBrand.getShortName(), productBrandDTO.getShortName());
     }
 
     @Test
@@ -34,11 +36,15 @@ public class ProductBrandMapperTest {
         ProductBrandDTO productBrandDto = new ProductBrandDTO();
         productBrandDto.setId(111L);
         productBrandDto.setName("Chitale Bandhu Mithaiwale");
+        productBrandDto.setShortName("CBD");
+
         //when
         ProductBrand productBrand = productBrandMapper.getProductBrand(productBrandDto);
         //then
         Assert.assertEquals(productBrandDto.getId(), productBrand.getId());
         Assert.assertEquals(productBrandDto.getName(), productBrand.getName());
+        Assert.assertEquals(productBrand.getShortName(), productBrandDto.getShortName());
+
     }
 
 }

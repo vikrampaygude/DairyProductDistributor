@@ -29,4 +29,21 @@ public class DistributorArea {
     @ManyToMany(mappedBy = "distributorAreaList")
     private List<Product> productList = new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        DistributorArea that = (DistributorArea) o;
+
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + id.hashCode();
+        return result;
+    }
 }

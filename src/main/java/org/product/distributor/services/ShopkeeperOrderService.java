@@ -2,12 +2,16 @@ package org.product.distributor.services;
 
 import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.mapper.ShopkeeperOrderMapper;
+import org.product.distributor.model.OrderProduct;
 import org.product.distributor.model.ShopkeeperOrder;
+import org.product.distributor.repository.OrderProductRepo;
 import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by vikram on 05/07/18.
@@ -19,10 +23,13 @@ public class ShopkeeperOrderService {
 
     private ShopkeeperOrderRepo shopkeeperOrderRepo;
     private ShopkeeperOrderMapper shopkeeperOrderMapper;
+    private OrderProductRepo orderProductRepo;
 
-    public ShopkeeperOrderService(ShopkeeperOrderRepo shopkeeperOrderRepo, ShopkeeperOrderMapper shopkeeperOrderMapper) {
+
+    public ShopkeeperOrderService(ShopkeeperOrderRepo shopkeeperOrderRepo, ShopkeeperOrderMapper shopkeeperOrderMapper, OrderProductRepo orderProductRepo) {
         this.shopkeeperOrderRepo = shopkeeperOrderRepo;
         this.shopkeeperOrderMapper = shopkeeperOrderMapper;
+        this.orderProductRepo = orderProductRepo;
     }
 
     public List<ShopkeeperOrderDTO> getAll(){
@@ -46,4 +53,48 @@ public class ShopkeeperOrderService {
         return shopkeeperOrderRepo.save(shopkeeperOrderMapper.getShopkeeperOrder(shopkeeperOrderDTO));
     }
 
+    public ShopkeeperOrderDTO calculateAndSaveOrderBill(Long id){
+
+        Optional<ShopkeeperOrder> shopkeeperOrderOptional = shopkeeperOrderRepo.findById(id);
+        if(shopkeeperOrderOptional.isPresent() == false)
+            return null;
+
+        ShopkeeperOrder shopkeeperOrder = shopkeeperOrderOptional.get();
+
+        List<OrderProduct> orderProductList =  orderProductRepo.findByShopkeeperOrderId(id);
+
+        Double total = 0.0;
+        Double due   = 0.0;
+
+        //we need to calculate total bill, paid bill and due bill
+        for(OrderProduct orderProduct : orderProductList){
+            total = total + (orderProduct.getQuantity() * orderProduct.getSellingPrice());
+        }
+
+        shopkeeperOrder.setTotalAmount(total);
+        shopkeeperOrder.setDueAmount(total - (shopkeeperOrder.getPaidAmount()==null?0.0: shopkeeperOrder.getPaidAmount()) );
+
+        shopkeeperOrderRepo.save(shopkeeperOrder);
+
+        return shopkeeperOrderMapper.getShopkeeperOrderDTO(shopkeeperOrder);
+    }
+
+    /**
+     * TODO: VALIDATION needs to be done
+     */
+
+    public ShopkeeperOrderDTO updatePaidPrice(ShopkeeperOrderDTO shopkeeperOrderDTO) {
+        ShopkeeperOrder shopkeeperOrder = null;
+        Optional<ShopkeeperOrder> shopkeeperOrderOptional = shopkeeperOrderRepo.findById(shopkeeperOrderDTO.getId());
+        if(shopkeeperOrderOptional.isPresent()){
+            shopkeeperOrder = shopkeeperOrderOptional.get();
+        }else {
+            throw new InvalidParameterException("Invalid input provided to update paid amount. No value present in data for given order");
+        }
+        shopkeeperOrder.setPaidAmount(shopkeeperOrderDTO.getPaidAmount());
+        shopkeeperOrder.setDueAmount(shopkeeperOrderDTO.getTotalAmount() - shopkeeperOrderDTO.getPaidAmount() ); //all validation needs to be performed here...
+
+
+        return shopkeeperOrderMapper.getShopkeeperOrderDTO(shopkeeperOrderRepo.save(shopkeeperOrder));
+    }
 }
