@@ -39,6 +39,13 @@ public class ShopkeeperService {
         return shopkeeperDTOList;
     }
 
+    public List<ShopkeeperDTO> getAll(Long distributorAreaId){
+        List<ShopkeeperDTO> shopkeeperDTOList = new ArrayList<>();
+        shopkeeperRepo.findByDistributorArea_Id(distributorAreaId).forEach(d -> shopkeeperDTOList.add(shopkeeperMapper.getShopkeeperDTO(d)));
+        return shopkeeperDTOList;
+    }
+
+
     public ShopkeeperDTO getById(Long id){
         return shopkeeperMapper.getShopkeeperDTO(shopkeeperRepo.findById(id).get());
     }

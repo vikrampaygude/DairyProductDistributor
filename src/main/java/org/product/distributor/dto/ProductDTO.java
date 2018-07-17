@@ -20,7 +20,7 @@ public class ProductDTO {
     private Double purchasePrice;
     private String unitOfMeasure;
 
-    private List<ProductQuantityPriceDTO> productQuantityPriceDTOList;
+    private List<ProductWeightPriceDTO> productWeightPriceDTOList;
     private List<DistributorAreaDTO> distributorAreaDTOList;
 
 }

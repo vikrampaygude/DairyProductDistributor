@@ -26,23 +26,30 @@ public class ProductService {
 
     public List<ProductDTO> getAll(){
         List<ProductDTO> productDTOList = new ArrayList<>();
-        productRepo.findAll().forEach(d -> productDTOList.add(productMapper.getProductDTO(d,d.getProductQuantityPriceList(), d.getDistributorAreaList())));
+        productRepo.findAll().forEach(d -> productDTOList.add(productMapper.getProductDTO(d,d.getProductWeightPriceList(), d.getDistributorAreaList())));
         return productDTOList;
     }
 
+    public List<ProductDTO> getAll(Long distributorAreaId){
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        productRepo.findByDistributorAreaList_Id(distributorAreaId).forEach(d -> productDTOList.add(productMapper.getProductDTO(d,d.getProductWeightPriceList(), d.getDistributorAreaList())));
+        return productDTOList;
+    }
+
+
     public ProductDTO getById(Long id){
-        return productMapper.getProductDTO(productRepo.findById(id).get(), productRepo.findById(id).get().getProductQuantityPriceList(), productRepo.findById(id).get().getDistributorAreaList());
+        return productMapper.getProductDTO(productRepo.findById(id).get(), productRepo.findById(id).get().getProductWeightPriceList(), productRepo.findById(id).get().getDistributorAreaList());
     }
 
     public Product saveProduct(ProductDTO productDTO){
-        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList(),productDTO.getDistributorAreaDTOList()));
+        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductWeightPriceDTOList(),productDTO.getDistributorAreaDTOList()));
     }
 
     public Product updateProduct(ProductDTO productDTO){
         if(productDTO.getId() == null || productDTO.getId() ==0)
             throw new IllegalArgumentException();
 
-        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductQuantityPriceDTOList(), productDTO.getDistributorAreaDTOList()));
+        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductWeightPriceDTOList(), productDTO.getDistributorAreaDTOList()));
     }
 
 }

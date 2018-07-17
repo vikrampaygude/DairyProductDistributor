@@ -19,8 +19,8 @@ values
 , (2, 'Gaiche Dudh','gd','liter', 32.50, 30.00, 1)
 , (3, 'Tup ', 'tp','kg', 170.0, 180.00, 1);
 
-insert into product_quantity_price
-(id, purchase_price, selling_price, quantity, product_id)
+insert into product_weight_price
+(id, purchase_price, selling_price, weight, product_id)
 values (1, 10, 12, 0.250, 1),
 (2, 40.20, 42.20, 1, 2),
 (3, 140, 150, 0.250, 3);

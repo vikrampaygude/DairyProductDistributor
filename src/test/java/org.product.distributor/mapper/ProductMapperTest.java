@@ -5,13 +5,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.product.distributor.dto.DistributorAreaDTO;
 import org.product.distributor.dto.ProductDTO;
-import org.product.distributor.dto.ProductQuantityPriceDTO;
+import org.product.distributor.dto.ProductWeightPriceDTO;
 import org.product.distributor.model.DistributorArea;
 import org.product.distributor.model.Product;
 import org.product.distributor.model.ProductBrand;
-import org.product.distributor.model.ProductQuantityPrice;
-
-import java.util.ArrayList;
+import org.product.distributor.model.ProductWeightPrice;
 
 /**
  * Created by vikram on 04/07/18.
@@ -36,21 +34,19 @@ public class ProductMapperTest {
 
         product.setProductBrand(productBrand);
 
-        ProductQuantityPrice productQuantityPrice = new ProductQuantityPrice();
-        productQuantityPrice.setId(101L);
-        productQuantityPrice.setQuantity(1D);
-        productQuantityPrice.setPurchasePrice(40.50);
-        productQuantityPrice.setSellingPrice(42.50);
-        //productQuantityPrice.setProduct(product);
+        ProductWeightPrice productWeightPrice = new ProductWeightPrice();
+        productWeightPrice.setId(101L);
+        productWeightPrice.setWeight(1D);
+        productWeightPrice.setPurchasePrice(40.50);
+        productWeightPrice.setSellingPrice(42.50);
 
-        ProductQuantityPrice productQuantityPrice2 = new ProductQuantityPrice();
-        productQuantityPrice2.setId(101L);
-        productQuantityPrice2.setQuantity(0.250D);
-        productQuantityPrice2.setPurchasePrice(10.50);
-        productQuantityPrice2.setSellingPrice(12.50);
-        //productQuantityPrice2.setProduct(product);
+        ProductWeightPrice productWeightPrice2 = new ProductWeightPrice();
+        productWeightPrice2.setId(101L);
+        productWeightPrice2.setWeight(0.250D);
+        productWeightPrice2.setPurchasePrice(10.50);
+        productWeightPrice2.setSellingPrice(12.50);
 
-        product.setProductQuantityPriceList(List.of(productQuantityPrice, productQuantityPrice2));
+        product.setProductWeightPriceList(List.of(productWeightPrice, productWeightPrice2));
 
         DistributorArea distributorArea = new DistributorArea();
         distributorArea.setId(1111L);
@@ -65,7 +61,7 @@ public class ProductMapperTest {
         product.setDistributorAreaList(distributorAreaList);
 
         //when
-        ProductDTO productDTO = productMapper.getProductDTO(product, product.getProductQuantityPriceList(), distributorAreaList);
+        ProductDTO productDTO = productMapper.getProductDTO(product, product.getProductWeightPriceList(), distributorAreaList);
 
         //then
         Assert.assertEquals(product.getId(), productDTO.getId());
@@ -76,7 +72,7 @@ public class ProductMapperTest {
         Assert.assertEquals(product.getPurchasePrice(), productDTO.getPurchasePrice());
         Assert.assertEquals(product.getProductBrand().getId(), productDTO.getBrandId());
         Assert.assertEquals(product.getProductBrand().getName(), productDTO.getBrandName());
-        Assert.assertEquals(product.getProductQuantityPriceList().size(), productDTO.getProductQuantityPriceDTOList().size());
+        Assert.assertEquals(product.getProductWeightPriceList().size(), productDTO.getProductWeightPriceDTOList().size());
         Assert.assertEquals(product.getDistributorAreaList().size(), productDTO.getDistributorAreaDTOList().size());
     }
 
@@ -93,22 +89,22 @@ public class ProductMapperTest {
         productDTO.setPurchasePrice(40.50);
         productDTO.setUnitOfMeasure("Liter");
 
-        ProductQuantityPriceDTO productQuantityPriceDTO = new ProductQuantityPriceDTO();
-        productQuantityPriceDTO.setId(101L);
-        productQuantityPriceDTO.setQuantity(1D);
-        productQuantityPriceDTO.setPurchasePrice(40.50);
-        productQuantityPriceDTO.setSellingPrice(42.50);
-        productQuantityPriceDTO.setProductId(productDTO.getId());
+        ProductWeightPriceDTO productWeightPriceDTO = new ProductWeightPriceDTO();
+        productWeightPriceDTO.setId(101L);
+        productWeightPriceDTO.setWeight(1D);
+        productWeightPriceDTO.setPurchasePrice(40.50);
+        productWeightPriceDTO.setSellingPrice(42.50);
+        productWeightPriceDTO.setProductId(productDTO.getId());
 
-        ProductQuantityPriceDTO productQuantityPriceDTO2 = new ProductQuantityPriceDTO();
-        productQuantityPriceDTO2.setId(101L);
-        productQuantityPriceDTO2.setQuantity(0.250D);
-        productQuantityPriceDTO2.setPurchasePrice(10.50);
-        productQuantityPriceDTO2.setSellingPrice(12.50);
-        productQuantityPriceDTO2.setProductId(productDTO.getId());
+        ProductWeightPriceDTO productWeightPriceDTO2 = new ProductWeightPriceDTO();
+        productWeightPriceDTO2.setId(101L);
+        productWeightPriceDTO2.setWeight(0.250D);
+        productWeightPriceDTO2.setPurchasePrice(10.50);
+        productWeightPriceDTO2.setSellingPrice(12.50);
+        productWeightPriceDTO2.setProductId(productDTO.getId());
 
-        List<ProductQuantityPriceDTO> list = List.of(productQuantityPriceDTO, productQuantityPriceDTO2);
-        productDTO.setProductQuantityPriceDTOList(list);
+        List<ProductWeightPriceDTO> list = List.of(productWeightPriceDTO, productWeightPriceDTO2);
+        productDTO.setProductWeightPriceDTOList(list);
 
         DistributorAreaDTO distributorAreaDTO = new DistributorAreaDTO();
         distributorAreaDTO.setId(1111L);
@@ -133,7 +129,7 @@ public class ProductMapperTest {
         Assert.assertEquals(productDTO.getPurchasePrice(), product.getPurchasePrice());
         Assert.assertEquals(productDTO.getBrandId(), product.getProductBrand().getId());
         Assert.assertEquals(productDTO.getBrandName(), product.getProductBrand().getName());
-        Assert.assertEquals(productDTO.getProductQuantityPriceDTOList().size(), product.getProductQuantityPriceList().size());
+        Assert.assertEquals(productDTO.getProductWeightPriceDTOList().size(), product.getProductWeightPriceList().size());
         Assert.assertEquals(product.getDistributorAreaList().size(), productDTO.getDistributorAreaDTOList().size());
 
     }

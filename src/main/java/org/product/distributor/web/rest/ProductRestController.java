@@ -36,6 +36,11 @@ public class ProductRestController {
         return productService.getAll();
     }
 
+    @GetMapping("/distributorArea/{distributorAreaId}")
+    public List<ProductDTO> getByDistributorAreaId(@PathVariable Long distributorAreaId){
+        return productService.getAll(distributorAreaId);
+    }
+
     @GetMapping("/{id}")
     public ProductDTO getProduct(@PathVariable Long id){
         return productService.getById(id);

@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Data
-public class ProductQuantityPrice {
+public class ProductWeightPrice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class ProductQuantityPrice {
     private Double purchasePrice;
 
     @Column
-    private Double quantity;
+    private Double weight;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")

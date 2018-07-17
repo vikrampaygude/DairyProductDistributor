@@ -1,6 +1,6 @@
 package org.product.distributor.web.rest;
 
-import org.product.distributor.dto.DailySellGridDataDTO;
+import org.product.distributor.dto.order.DailySellGridDataDTO;
 import org.product.distributor.dto.OrderProductDTO;
 import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.dto.search.OrderProductSearchDTO;
@@ -34,12 +34,17 @@ public class OrderProductRestController {
         orderProductService.saveOrderProduct(orderProductDTO);
     }
 
+    @PostMapping("/by-weight")
+    public void saveOrderByWeight(@RequestBody OrderProductDTO orderProductDTO){
+        orderProductService.saveOrderProduct(orderProductDTO);
+    }
+
     @PostMapping("/place-day-orders")
     public void createEmptyDayOrders(@RequestBody OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException {
         orderProductService.placeEmptyDayOrders(orderProductSearchDTO);
     }
 
-    @PostMapping("/update-quantity")
+    @PostMapping("/update-weight")
     public ShopkeeperOrderDTO updateQuantity(@RequestBody OrderProductDTO orderProductDTO){
        return orderProductService.updateQuanity(orderProductDTO);
     }
@@ -55,6 +60,23 @@ public class OrderProductRestController {
         return shopkeeperOrderService.updatePaidPrice(shopkeeperOrderDTO);
     }
 
+    @PostMapping("/create-yesterday-copy")
+    public void createOrderAsYesterday(@RequestBody OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException {
+        orderProductService.createDailyOrderAsYesterday(orderProductSearchDTO.getLocalDate(), orderProductSearchDTO.getDistributorAreaId());
+    }
+
+    @PutMapping("/apply-latest-price")
+    public void applyLatestPrices(@RequestBody OrderProductSearchDTO orderProductSearchDTO){
+
+        orderProductService.applyLatestPrices(orderProductSearchDTO.getDistributorAreaId(), orderProductSearchDTO.getLocalDate());
+    }
+
+
+
+    @GetMapping("/copy-yesterday-order/{orderId}")
+    public void copyYesterdayOrder(@PathVariable Long orderId){
+        orderProductService.copyOrderFromYesterday(orderId);
+    }
 
     @GetMapping("/list")
     public List<OrderProductDTO> getOrderProducts(){

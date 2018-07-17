@@ -36,6 +36,12 @@ public class ShopkeeperRestController {
         return shopkeeperService.getAll();
     }
 
+    @GetMapping("/list-distributor-area/{distributorAreaId}")
+    public List<ShopkeeperDTO> getShopkeepersByArea(@PathVariable Long distributorAreaId){
+        return shopkeeperService.getAll(distributorAreaId);
+    }
+
+
     @GetMapping("/{id}")
     public ShopkeeperDTO getShopkeeper(@PathVariable Long id){
 

@@ -1,8 +1,8 @@
 package org.product.distributor.services;
 
 import org.product.distributor.constant.ShopkeeperOrderStatus;
-import org.product.distributor.dto.DailySellGridDataDTO;
-import org.product.distributor.dto.DailySellRowDataDTO;
+import org.product.distributor.dto.order.DailySellGridDataDTO;
+import org.product.distributor.dto.order.DailySellRowDataDTO;
 import org.product.distributor.dto.OrderProductDTO;
 import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.dto.search.OrderProductSearchDTO;
@@ -10,6 +10,7 @@ import org.product.distributor.mapper.DailySellRowDataMapper;
 import org.product.distributor.mapper.OrderProductMapper;
 import org.product.distributor.model.*;
 import org.product.distributor.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.naming.OperationNotSupportedException;
@@ -32,6 +33,15 @@ public class OrderProductService {
     private ShopkeeperOrderRepo shopkeeperOrderRepo;
     private DailySellRowDataMapper dailySellRowDataMapper;
     private ShopkeeperOrderService shopkeeperOrderService;
+
+    @Autowired
+    private ProductWeightPriceRepo productWeightPriceRepo;
+
+    @Autowired
+    private ShopkeeperCustomPriceService shopkeeperCustomPriceService;
+
+    @Autowired
+    private ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo;
 
     public OrderProductService(OrderProductRepo orderProductRepo, OrderProductMapper orderProductMapper, ProductRepo productRepo, ShopkeeperRepo shopkeeperRepo, ShopkeeperOrderRepo shopkeeperOrderRepo, DailySellRowDataMapper dailySellRowDataMapper, ShopkeeperOrderService shopkeeperOrderService) {
         this.orderProductRepo = orderProductRepo;
@@ -57,14 +67,17 @@ public class OrderProductService {
     }
 
     public OrderProduct saveOrderProduct(OrderProductDTO orderProductDTO){
-        return orderProductRepo.save(orderProductMapper.getOrderProduct(orderProductDTO));
+
+        OrderProduct orderProduct = orderProductMapper.mapWithoutCustomPrice(orderProductDTO);
+        orderProduct.setSellingPrice(productWeightPriceRepo.findById(orderProductDTO.getProductWeightPriceId()).get().getSellingPrice());
+        return orderProductRepo.save(orderProduct);
     }
 
     public OrderProduct updateOrderProduct(OrderProductDTO orderProductDTO){
         if(orderProductDTO.getId() == null || orderProductDTO.getId() ==0)
             throw new IllegalArgumentException();
 
-        return orderProductRepo.save(orderProductMapper.getOrderProduct(orderProductDTO));
+        return orderProductRepo.save(orderProductMapper.mapWithoutCustomPrice(orderProductDTO));
     }
 
     /*
@@ -103,7 +116,15 @@ public class OrderProductService {
             List<OrderProduct> orderProductList = new ArrayList<>(productList.size());
 
             productList.forEach(product -> {
-                orderProductList.add(OrderProduct.getObject(product, shopkeeperOrder));
+                OrderProduct orderProduct = OrderProduct.getObject(product, shopkeeperOrder);
+
+                ShopkeeperCustomPrice  shopkeeperCustomPrice = shopkeeperCustomPriceService.getProductCustomPrice(product, shopkeeperOrder.getId());
+                if(shopkeeperCustomPrice!=null)
+                    orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
+
+                orderProduct.setShopkeeperCustomPrice(shopkeeperCustomPrice);
+                orderProductList.add(orderProduct);
+
             });
 
             shopkeeperOrder.setOrderProductList(orderProductList);
@@ -115,6 +136,37 @@ public class OrderProductService {
         shopkeeperOrderRepo.saveAll(shopkeepersOrderList);
     }
 
+    public void applyLatestPrices(Long distributorAreaId, LocalDate localDate) {
+        List<ShopkeeperOrder> shopkeepersOrderList = shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(localDate, distributorAreaId);
+
+        for (ShopkeeperOrder shopkeeperOrder : shopkeepersOrderList) {
+
+            List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderId(shopkeeperOrder.getId());
+
+            Double totalPrices = 0.0;
+            for (OrderProduct orderProduct : orderProductList) {
+                ShopkeeperCustomPrice shopkeeperCustomPrice = shopkeeperCustomPriceService.getProductCustomPrice(orderProduct.getProduct(), shopkeeperOrder.getId());
+                if (shopkeeperCustomPrice != null)
+                    orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
+
+                orderProduct.setSellingPrice(orderProduct.getProduct().getSellingPrice());
+
+                totalPrices += (orderProduct.getQuantity() * orderProduct.getSellingPrice());
+            }
+
+            shopkeeperOrder.setTotalAmount(totalPrices);
+
+            if(shopkeeperOrder.getPaidAmount() == null)
+                shopkeeperOrder.setDueAmount(shopkeeperOrder.getTotalAmount());
+            else
+                shopkeeperOrder.setDueAmount(shopkeeperOrder.getTotalAmount() - shopkeeperOrder.getPaidAmount());
+
+            orderProductRepo.saveAll(orderProductList);
+            shopkeeperOrderRepo.save(shopkeeperOrder);
+
+        }
+    }
+
     public DailySellGridDataDTO getDistributorAreaDayOrders(LocalDate date, Long distributorId){
 
         List<DailySellRowDataDTO> dailySellRowDataDTOS = new ArrayList<>();
@@ -123,32 +175,44 @@ public class OrderProductService {
 
         List<Long> shopkeeperOrderIdList = new ArrayList<>();
 
+        Double grandTotalAmount=0.0, grandTotalPaidAmount=0.0, grandTotalDueAmount=0.0;
+
         List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorId);
         shopkeeperOrderList.forEach(so -> shopkeeperOrderIdList.add(so.getId()));
 
         List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderIds(shopkeeperOrderIdList);
 
-
-
-        shopkeeperOrderList.forEach(shopkeeperOrder -> {
+        for (ShopkeeperOrder shopkeeperOrder : shopkeeperOrderList) {
             Predicate<OrderProduct> orderProductPredicate = order -> order.getShopkeeperOrder().getId().equals(shopkeeperOrder.getId());
 
             DailySellRowDataDTO dailySellRowDataDTO = dailySellRowDataMapper.getDailySellRowDataDTO(shopkeeperOrder
-                    ,orderProductList.stream().parallel()
+                    , orderProductList.stream().parallel()
                             .filter(orderProductPredicate)
                             .collect(Collectors.toList())
             );
 
+            dailySellRowDataDTO.processByWeight();// process and put same product in list.
             dailySellRowDataDTOS.add(dailySellRowDataDTO);
-        });
+
+            grandTotalAmount += shopkeeperOrder.getTotalAmount();
+            grandTotalPaidAmount += shopkeeperOrder.getPaidAmount();
+            grandTotalDueAmount +=shopkeeperOrder.getDueAmount();
+        }
+
 
         if(dailySellRowDataDTOS.size() >0 ) {
             dailySellGridDataDTO = new DailySellGridDataDTO();
             dailySellGridDataDTO.setDate(date);
             dailySellGridDataDTO.setDailySellRowDataDTOList(dailySellRowDataDTOS);
+            dailySellGridDataDTO.calculateTotalRow();
+
+            dailySellGridDataDTO.setGrandTotalAmount(grandTotalAmount);
+            dailySellGridDataDTO.setGrandTotalPaidAmount(grandTotalPaidAmount);
+            dailySellGridDataDTO.setGrandTotalDueAmount(grandTotalDueAmount);
         }
         return dailySellGridDataDTO;
     }
+
 
     public Boolean isShopkeeperOrderPresentOnDate(LocalDate date, Long shopkeeperId){
         return shopkeeperOrderRepo.countByShopkeeperIdAndDate(date, shopkeeperId) > 0 ;
@@ -163,6 +227,137 @@ public class OrderProductService {
         orderProductRepo.updateQuanitity(orderProductDTO.getId(), orderProductDTO.getQuantity());
 
         return shopkeeperOrderService.calculateAndSaveOrderBill(orderProductDTO.getOrderId());
+    }
+
+    public void updateSellingPrice(Long orderId, ShopkeeperCustomPrice shopkeeperCustomPrice, Double price) {
+        Optional<OrderProduct> orderProductOptional = orderProductRepo.findById(orderId);
+        if(orderProductOptional.isPresent()) {
+            OrderProduct orderProduct = orderProductOptional.get();
+            orderProduct.setSellingPrice(price);
+            orderProduct.setShopkeeperCustomPrice(shopkeeperCustomPrice);
+            orderProductRepo.save(orderProduct);
+            shopkeeperOrderService.calculateAndSaveOrderBill(orderId);
+
+        }
+    }
+
+    /**
+     * Copy will copy by values
+     */
+    public void copyOrderFromYesterday(Long orderId) {
+        Optional<ShopkeeperOrder> shopkeeperOrderOptional = shopkeeperOrderRepo.findById(orderId);
+        if (!shopkeeperOrderOptional.isPresent())
+            return;
+        ShopkeeperOrder shopkeeperOrder = shopkeeperOrderOptional.get();
+        Optional<ShopkeeperOrder> oneByShopkeeperIdAndDate = shopkeeperOrderRepo.findOneByShopkeeperIdAndDate(shopkeeperOrder.getDate().minusDays(1)
+                , shopkeeperOrder.getShopkeeper().getId());
+
+        if (!oneByShopkeeperIdAndDate.isPresent())
+            return;
+        ShopkeeperOrder prevShopkeeperOrder = oneByShopkeeperIdAndDate.get();
+
+
+        List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderId(shopkeeperOrder.getId());
+        List<OrderProduct> orderProductPrevList = orderProductRepo.findByShopkeeperOrderId(prevShopkeeperOrder.getId());
+
+        for (OrderProduct prevOrderProduct : orderProductPrevList){
+            Boolean found = false;
+            ProductWeightPrice prevWp = prevOrderProduct.getProductWeightPrice();
+
+            for (OrderProduct orderProduct : orderProductList) {
+                ProductWeightPrice wp = orderProduct.getProductWeightPrice();
+
+                if (orderProduct.getProduct().equals(prevOrderProduct.getProduct())
+                        && ( (wp ==null && prevWp ==null) || (prevWp!=null && wp != null && prevWp.getId().equals(wp.getId()))
+                        )) {
+                    orderProduct.setQuantity(prevOrderProduct.getQuantity());
+                    orderProduct.setSellingPrice(prevOrderProduct.getSellingPrice());
+                    orderProduct.setProductWeightPrice(prevOrderProduct.getProductWeightPrice());
+                    orderProduct.setShopkeeperCustomPrice(saveCopyOfCustomPrice(prevOrderProduct.getShopkeeperCustomPrice(), shopkeeperOrder));
+
+                    orderProductRepo.save(orderProduct);
+
+                    found = true;
+                }
+
+            }
+            if(!found){
+                saveCopyOfOrderProduct(prevOrderProduct, shopkeeperOrder);
+            }
+
+        }
+    }
+
+
+
+    /**
+     * Thiw will create by yesterday
+     */
+    public void createDailyOrderAsYesterday(LocalDate date, Long distributorAreaId) throws OperationNotSupportedException {
+
+        LocalDate yesterdaysDate = date.minusDays(1);// make it yesterday
+
+        List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(yesterdaysDate, distributorAreaId);
+
+        if(shopkeeperOrderRepo.countBydistributorAreaIdAndDate(date, distributorAreaId) > 0)
+            throw new OperationNotSupportedException("Order already present can't be created");
+
+        shopkeeperOrderList.forEach(so -> {
+            List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderId(so.getId());
+            copyNewOrderByShopkeeper(so, orderProductList, date);// for todays date
+        });
+    }
+
+    public void copyNewOrderByShopkeeper(ShopkeeperOrder so, List<OrderProduct> orderProductList, LocalDate date){
+        //first create copy of so
+
+        ShopkeeperOrder newSo = saveCopyOfShopkeeperOrder(so, date);
+
+        List<OrderProduct> newOrderProductList = new ArrayList<>();
+
+        orderProductList.forEach(orderProduct -> {
+            newOrderProductList.add(saveCopyOfOrderProduct(orderProduct, newSo));
+        });
+        orderProductRepo.saveAll(newOrderProductList);
+
+    }
+
+    private OrderProduct saveCopyOfOrderProduct(OrderProduct op, ShopkeeperOrder so) {
+        OrderProduct newOp = new OrderProduct();
+        newOp.setSellingPrice(op.getSellingPrice());
+        newOp.setShopkeeperCustomPrice(saveCopyOfCustomPrice(op.getShopkeeperCustomPrice(), so));
+        newOp.setProductWeightPrice(op.getProductWeightPrice());
+        newOp.setProduct(op.getProduct());
+        newOp.setShopkeeperOrder(op.getShopkeeperOrder());
+        newOp.setQuantity(op.getQuantity());
+        newOp.setShopkeeperOrder(so);
+
+        return orderProductRepo.save(newOp);
+
+    }
+
+
+    private ShopkeeperOrder saveCopyOfShopkeeperOrder(ShopkeeperOrder so, LocalDate date) {
+        ShopkeeperOrder newSo = new ShopkeeperOrder();
+        newSo.setDistributorArea(so.getDistributorArea());
+        newSo.setStatus(so.getStatus());
+        newSo.setShopkeeper(so.getShopkeeper());
+        newSo.setDate(date);
+        return shopkeeperOrderRepo.save(newSo);
+    }
+
+    private ShopkeeperCustomPrice saveCopyOfCustomPrice(ShopkeeperCustomPrice copyFormCustomPrice, ShopkeeperOrder so){
+
+        if(copyFormCustomPrice == null)
+            return null;
+
+        ShopkeeperCustomPrice shopkeeperCustomPrice = new ShopkeeperCustomPrice();
+        shopkeeperCustomPrice.setPrice(copyFormCustomPrice.getPrice());
+        shopkeeperCustomPrice.setProduct(copyFormCustomPrice.getProduct());
+        shopkeeperCustomPrice.setShopkeeperOrder(so);
+
+        return shopkeeperCustomPriceRepo.save(shopkeeperCustomPrice);
+
     }
 
 }

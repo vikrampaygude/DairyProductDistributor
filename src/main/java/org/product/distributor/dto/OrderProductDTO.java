@@ -5,6 +5,7 @@ import org.product.distributor.model.Product;
 import org.product.distributor.model.ShopkeeperOrder;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by vikram on 05/07/18.
@@ -21,7 +22,14 @@ public class OrderProductDTO {
     private String productBrandShortName;
     private Double sellingPrice;
     private Double quantity;
+    private String unitOfMeasure;
     private Long orderId;
     private Long customSellingPrice;
+    private Long productWeightPriceId;
+    private Double productWeight;
+    private Long customPriceId;
+
+    // case when one product is ordered in diffrent weight so price changes all changes.
+    private List<OrderProductDTO> byWeightOrders;
 
 }

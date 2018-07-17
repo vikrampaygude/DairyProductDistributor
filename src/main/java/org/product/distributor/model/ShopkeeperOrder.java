@@ -25,13 +25,13 @@ public class ShopkeeperOrder {
     private String status;
 
     @Column
-    private Double totalAmount;
+    private Double totalAmount = 0.0;
 
     @Column
-    private Double paidAmount;
+    private Double paidAmount = 0.0;
 
     @Column
-    private Double dueAmount;
+    private Double dueAmount = 0.0;
 
     @OneToOne
     private DistributorArea distributorArea;

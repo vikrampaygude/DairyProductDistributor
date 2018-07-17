@@ -55,6 +55,6 @@ public class Product {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<ProductQuantityPrice>  productQuantityPriceList;
+    private List<ProductWeightPrice> productWeightPriceList;
 }
 

@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-import org.product.distributor.dto.DailySellRowDataDTO;
+import org.product.distributor.dto.order.DailySellRowDataDTO;
 import org.product.distributor.dto.OrderProductDTO;
 import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.model.OrderProduct;
@@ -38,10 +38,14 @@ public interface DailySellRowDataMapper {
     @Mappings({
             @Mapping(source = "product.id", target = "productId"),
             @Mapping(source = "product.shortName", target = "productShortName"),
+            @Mapping(source = "product.unitOfMeasure", target = "unitOfMeasure"),
             @Mapping(source = "product.name", target = "productName"),
             @Mapping(source = "product.productBrand.name", target = "productBrandName"),
             @Mapping(source = "product.productBrand.shortName", target = "productBrandShortName"),
-            @Mapping(source = "shopkeeperOrder.id", target = "orderId")
+            @Mapping(source = "shopkeeperOrder.id", target = "orderId"),
+            @Mapping(source = "productWeightPrice.id", target = "productWeightPriceId"),
+            @Mapping(source = "productWeightPrice.weight", target = "productWeight"),
+            @Mapping(source = "shopkeeperCustomPrice.id", target = "customPriceId")
     })
     OrderProductDTO map(OrderProduct orderProduct);
 

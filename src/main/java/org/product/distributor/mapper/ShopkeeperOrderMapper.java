@@ -7,6 +7,8 @@ import org.mapstruct.factory.Mappers;
 import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.model.ShopkeeperOrder;
 
+import java.util.List;
+
 /**
  * Created by vikram on 05/07/18.
  *
@@ -28,4 +30,6 @@ public interface ShopkeeperOrderMapper {
             @Mapping(target = "shopkeeper.name", source = "shopkeeperName")
     })
     ShopkeeperOrder getShopkeeperOrder(ShopkeeperOrderDTO shopkeeperOrderDTO);
+
+    List<ShopkeeperOrderDTO> map(List<ShopkeeperOrder> shopkeeperOrders);
 }

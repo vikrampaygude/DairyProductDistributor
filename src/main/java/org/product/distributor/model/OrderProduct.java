@@ -3,6 +3,8 @@ package org.product.distributor.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 
 /**
  * Created by vikram on 05/07/18.
@@ -22,9 +24,14 @@ public class OrderProduct {
     @Column
     private Double sellingPrice;
 
-    @Column
+    @Column(nullable = false)
     private Double quantity;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    private ProductWeightPrice productWeightPrice;
+
+    @OneToOne
+    private ShopkeeperCustomPrice shopkeeperCustomPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopkeeper_order_id")
