@@ -1,9 +1,9 @@
 package org.product.distributor.web.rest;
 
 import org.product.distributor.dto.ShopkeeperCustomPriceDTO;
-import org.product.distributor.dto.ShopkeeperDTO;
+import org.product.distributor.dto.order.DailySellGridDataDTO;
+import org.product.distributor.services.OrderProductService;
 import org.product.distributor.services.ShopkeeperCustomPriceService;
-import org.product.distributor.services.ShopkeeperService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.OperationNotSupportedException;
@@ -19,19 +19,24 @@ import java.util.List;
 public class ShopkeeperCustomPriceRestController {
 
     private ShopkeeperCustomPriceService shopkeeperCustomPriceService;
+    private OrderProductService orderProductService;
 
-    public ShopkeeperCustomPriceRestController(ShopkeeperCustomPriceService shopkeeperCustomPriceService) {
+    public ShopkeeperCustomPriceRestController(ShopkeeperCustomPriceService shopkeeperCustomPriceService, OrderProductService orderProductService) {
         this.shopkeeperCustomPriceService = shopkeeperCustomPriceService;
+        this.orderProductService = orderProductService;
     }
 
     @PostMapping
-    public void saveShopkeeperCustomPrice(@RequestBody ShopkeeperCustomPriceDTO shopkeeperCustomPriceDTO) throws OperationNotSupportedException {
+    public DailySellGridDataDTO saveShopkeeperCustomPrice(@RequestBody ShopkeeperCustomPriceDTO shopkeeperCustomPriceDTO) throws OperationNotSupportedException {
         shopkeeperCustomPriceService.save(shopkeeperCustomPriceDTO);
+        return orderProductService.getGridData(shopkeeperCustomPriceDTO.getShopkeeperOrderId());
+
     }
 
     @PutMapping
-    public void updateShopkeeperCustomPrice(@RequestBody ShopkeeperCustomPriceDTO shopkeeperCustomPriceDTO){
+    public DailySellGridDataDTO updateShopkeeperCustomPrice(@RequestBody ShopkeeperCustomPriceDTO shopkeeperCustomPriceDTO){
         shopkeeperCustomPriceService.update(shopkeeperCustomPriceDTO);
+        return orderProductService.getGridData(shopkeeperCustomPriceDTO.getShopkeeperOrderId());
     }
 
     @GetMapping("/list")

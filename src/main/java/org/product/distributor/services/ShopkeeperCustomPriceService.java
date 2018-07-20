@@ -42,7 +42,7 @@ public class ShopkeeperCustomPriceService {
         ShopkeeperCustomPrice shopkeeperCustomPrice = shopkeeperCustomPriceMapper.map(shopkeeperCustomPriceDTO);
         shopkeeperCustomPrice = shopkeeperCustomPriceRepo.save(shopkeeperCustomPrice);
 
-        updateProductOrderCustomPrice(shopkeeperCustomPriceDTO.getOrderId(), shopkeeperCustomPrice, shopkeeperCustomPriceDTO.getPrice());
+        updateProductOrderCustomPrice(shopkeeperCustomPriceDTO.getOrderProductId(), shopkeeperCustomPrice, shopkeeperCustomPriceDTO.getPrice());
 
         return shopkeeperCustomPrice;
     }
@@ -55,7 +55,7 @@ public class ShopkeeperCustomPriceService {
         ShopkeeperCustomPrice shopkeeperCustomPrice = shopkeeperCustomPriceMapper.map(shopkeeperCustomPriceDTO);
         shopkeeperCustomPrice = shopkeeperCustomPriceRepo.save(shopkeeperCustomPrice);
 
-        updateProductOrderCustomPrice(shopkeeperCustomPriceDTO.getOrderId(), shopkeeperCustomPrice, shopkeeperCustomPriceDTO.getPrice());
+        updateProductOrderCustomPrice(shopkeeperCustomPriceDTO.getOrderProductId(), shopkeeperCustomPrice, shopkeeperCustomPriceDTO.getPrice());
 
         return shopkeeperCustomPrice;
 
@@ -79,4 +79,8 @@ public class ShopkeeperCustomPriceService {
         return shopkeeperCustomPrice.isPresent()?shopkeeperCustomPrice.get():null;
     }
 
+    public void deleteByShopkeeperOrderId(Long shopkeerOrderId) {
+
+        shopkeeperCustomPriceRepo.deleteByShopkeeperOrderId(shopkeerOrderId);
+    }
 }

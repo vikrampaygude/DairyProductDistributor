@@ -18,6 +18,7 @@ public class DailySellGridDataDTO {
     private Double grandTotalAmount;
     private Double grandTotalPaidAmount;
     private Double grandTotalDueAmount;
+    private Boolean hasFutureOrder; // next day order present or not
 
     public void calculateTotalRow(){
         Map<Long, List<OrderProductDTO>> prodIdOrderProdMap = getProductOrderProductMap();

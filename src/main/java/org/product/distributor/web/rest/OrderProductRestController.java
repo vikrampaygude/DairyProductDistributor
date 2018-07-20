@@ -4,6 +4,8 @@ import org.product.distributor.dto.order.DailySellGridDataDTO;
 import org.product.distributor.dto.OrderProductDTO;
 import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.dto.search.OrderProductSearchDTO;
+import org.product.distributor.error.exception.InvalidDailyOrderCreateReqException;
+import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
 import org.product.distributor.services.OrderProductService;
 import org.product.distributor.services.ShopkeeperOrderService;
 import org.springframework.web.bind.annotation.*;
@@ -31,22 +33,22 @@ public class OrderProductRestController {
 
     @PostMapping
     public void saveOrderProduct(@RequestBody OrderProductDTO orderProductDTO){
-        orderProductService.saveOrderProduct(orderProductDTO);
+        orderProductService.saveOrderProductByWeight(orderProductDTO);
     }
 
     @PostMapping("/by-weight")
-    public void saveOrderByWeight(@RequestBody OrderProductDTO orderProductDTO){
-        orderProductService.saveOrderProduct(orderProductDTO);
+    public DailySellGridDataDTO saveOrderByWeight(@RequestBody OrderProductDTO orderProductDTO){
+        return orderProductService.saveOrderProductByWeight(orderProductDTO);
     }
 
     @PostMapping("/place-day-orders")
-    public void createEmptyDayOrders(@RequestBody OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException {
+    public void createEmptyDayOrders(@RequestBody OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException, InvalidDailyOrderCreateReqException {
         orderProductService.placeEmptyDayOrders(orderProductSearchDTO);
     }
 
-    @PostMapping("/update-weight")
-    public ShopkeeperOrderDTO updateQuantity(@RequestBody OrderProductDTO orderProductDTO){
-       return orderProductService.updateQuanity(orderProductDTO);
+    @PostMapping("/update-quantity")
+    public void updateQuantity(@RequestBody OrderProductDTO orderProductDTO){
+       orderProductService.updateQuanity(orderProductDTO);
     }
 
 
@@ -56,8 +58,9 @@ public class OrderProductRestController {
     }
 
     @PostMapping("/update-paid-amount")
-    public ShopkeeperOrderDTO updatePaidAmount(@RequestBody ShopkeeperOrderDTO shopkeeperOrderDTO){
-        return shopkeeperOrderService.updatePaidPrice(shopkeeperOrderDTO);
+    public DailySellGridDataDTO updatePaidAmount(@RequestBody ShopkeeperOrderDTO shopkeeperOrderDTO){
+        shopkeeperOrderService.updatePaidPrice(shopkeeperOrderDTO);
+        return orderProductService.getGridData(shopkeeperOrderDTO.getId());
     }
 
     @PostMapping("/create-yesterday-copy")
@@ -74,8 +77,9 @@ public class OrderProductRestController {
 
 
     @GetMapping("/copy-yesterday-order/{orderId}")
-    public void copyYesterdayOrder(@PathVariable Long orderId){
+    public DailySellGridDataDTO copyYesterdayOrder(@PathVariable Long orderId) throws InvalidDailyOrderCreateReqException {
         orderProductService.copyOrderFromYesterday(orderId);
+        return orderProductService.getGridData(orderId);
     }
 
     @GetMapping("/list")
@@ -97,4 +101,11 @@ public class OrderProductRestController {
 
         return orderProductService.getAll();
     }
+
+    @DeleteMapping("/day-orders")
+    public void deleteDayOrders(@RequestParam String date, @RequestParam Long distributorAreaId) throws InvalidDailyOrderDeleteException {
+        LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("d/MM/yyyy"));
+        orderProductService.deleteDayOrder(localDate, distributorAreaId);
+    }
+
 }

@@ -8,15 +8,10 @@ import org.product.distributor.constant.ShopkeeperOrderStatus;
 import org.product.distributor.mapper.DailySellRowDataMapper;
 import org.product.distributor.mapper.OrderProductMapper;
 import org.product.distributor.mapper.ShopkeeperOrderMapper;
-import org.product.distributor.model.OrderProduct;
-import org.product.distributor.model.Product;
-import org.product.distributor.model.Shopkeeper;
-import org.product.distributor.model.ShopkeeperOrder;
-import org.product.distributor.repository.OrderProductRepo;
-import org.product.distributor.repository.ProductRepo;
-import org.product.distributor.repository.ShopkeeperOrderRepo;
-import org.product.distributor.repository.ShopkeeperRepo;
+import org.product.distributor.model.*;
+import org.product.distributor.repository.*;
 import org.product.distributor.services.OrderProductService;
+import org.product.distributor.services.ShopkeeperBillService;
 import org.product.distributor.services.ShopkeeperOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -52,13 +47,22 @@ public class OrderProductServiceIT {
     private DailySellRowDataMapper dailySellRowDataMapper;
 
     private ShopkeeperOrderService shopkeeperOrderService ;
+
     private ShopkeeperOrderMapper shopkeeperOrderMapper = ShopkeeperOrderMapper.INSTANCE;
 
+    private ShopkeeperBillMapper shopkeeperBillMapper = ShopkeeperBillMapper.INSTANCE;
+
+    private ShopkeeperBillService shopkeeperBillService;
+
+    @Autowired
+    private  ShopkeeperBillRepo shopkeeperBillRepo;
 
 
     @Before
     public void setUp(){
-        shopkeeperOrderService = new ShopkeeperOrderService(shopkeeperOrderRepo, shopkeeperOrderMapper, orderProductRepo);
+        shopkeeperBillService = new ShopkeeperBillService(shopkeeperBillRepo, shopkeeperBillMapper, shopkeeperRepo);
+
+        shopkeeperOrderService = new ShopkeeperOrderService(shopkeeperOrderRepo, shopkeeperOrderMapper, orderProductRepo, shopkeeperBillService);
         orderProductService = new OrderProductService(orderProductRepo, orderProductMapper,productRepo,shopkeeperRepo, shopkeeperOrderRepo, dailySellRowDataMapper, shopkeeperOrderService);
     }
 

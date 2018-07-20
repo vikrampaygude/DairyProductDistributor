@@ -13,8 +13,11 @@ import java.util.stream.Collectors;
 
 @Data
     public class DailySellRowDataDTO {
-    ShopkeeperOrderDTO shopkeeperOrderDTO;
-    List<OrderProductDTO> orderProductDTOS;
+    private ShopkeeperOrderDTO shopkeeperOrderDTO;
+    private List<OrderProductDTO> orderProductDTOS;
+    private Double billTotalPrice;
+    private Double billPaidPrice;
+    private Double billDuePrice;
 
     public void processByWeight() {
         for (int i = 0; i < orderProductDTOS.size(); i++) {

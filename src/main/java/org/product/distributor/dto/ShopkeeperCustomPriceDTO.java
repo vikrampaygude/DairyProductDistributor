@@ -15,7 +15,7 @@ public class ShopkeeperCustomPriceDTO {
     private String shopkeeperName;
     private String shopkeeperAreaName;
     private String productName;
-    private Long orderId;
+    private Long orderProductId;
     private Long shopkeeperOrderId;
 
 }

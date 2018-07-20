@@ -9,6 +9,7 @@ import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +25,14 @@ public class ShopkeeperOrderService {
     private ShopkeeperOrderRepo shopkeeperOrderRepo;
     private ShopkeeperOrderMapper shopkeeperOrderMapper;
     private OrderProductRepo orderProductRepo;
+    private ShopkeeperBillService shopkeeperBillService;
 
 
-    public ShopkeeperOrderService(ShopkeeperOrderRepo shopkeeperOrderRepo, ShopkeeperOrderMapper shopkeeperOrderMapper, OrderProductRepo orderProductRepo) {
+    public ShopkeeperOrderService(ShopkeeperOrderRepo shopkeeperOrderRepo, ShopkeeperOrderMapper shopkeeperOrderMapper, OrderProductRepo orderProductRepo, ShopkeeperBillService shopkeeperBillService) {
         this.shopkeeperOrderRepo = shopkeeperOrderRepo;
         this.shopkeeperOrderMapper = shopkeeperOrderMapper;
         this.orderProductRepo = orderProductRepo;
+        this.shopkeeperBillService = shopkeeperBillService;
     }
 
     public List<ShopkeeperOrderDTO> getAll(){
@@ -76,6 +79,9 @@ public class ShopkeeperOrderService {
 
         shopkeeperOrderRepo.save(shopkeeperOrder);
 
+        // update bill
+        shopkeeperBillService.saveShopkeeperBill(shopkeeperOrder.getDate(), shopkeeperOrder.getShopkeeper().getId(), shopkeeperOrder.getTotalAmount(), shopkeeperOrder.getPaidAmount());
+
         return shopkeeperOrderMapper.getShopkeeperOrderDTO(shopkeeperOrder);
     }
 
@@ -94,7 +100,19 @@ public class ShopkeeperOrderService {
         shopkeeperOrder.setPaidAmount(shopkeeperOrderDTO.getPaidAmount());
         shopkeeperOrder.setDueAmount(shopkeeperOrderDTO.getTotalAmount() - shopkeeperOrderDTO.getPaidAmount() ); //all validation needs to be performed here...
 
+        shopkeeperOrder = shopkeeperOrderRepo.save(shopkeeperOrder);
 
-        return shopkeeperOrderMapper.getShopkeeperOrderDTO(shopkeeperOrderRepo.save(shopkeeperOrder));
+        // update bill
+        shopkeeperBillService.saveShopkeeperBill(shopkeeperOrder.getDate(), shopkeeperOrder.getShopkeeper().getId(), shopkeeperOrder.getTotalAmount(), shopkeeperOrder.getPaidAmount());
+
+        return shopkeeperOrderMapper.getShopkeeperOrderDTO(shopkeeperOrder);
+    }
+
+    public ShopkeeperOrder getShopkeeperOrder(LocalDate date, Long shopkeeperId){
+        return shopkeeperOrderRepo.findOneByShopkeeperIdAndDate(date, shopkeeperId).get();
+    }
+
+    public void deleteById(Long shopkeeperOrderId){
+        shopkeeperOrderRepo.deleteById(shopkeeperOrderId);
     }
 }

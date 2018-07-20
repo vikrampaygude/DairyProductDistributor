@@ -29,8 +29,8 @@ public interface ShopkeeperOrderRepo extends JpaRepository<ShopkeeperOrder, Long
     @Query("SELECT so FROM ShopkeeperOrder so where so.date = :date and so.shopkeeper.id = :shopkeeperId")
     Optional<ShopkeeperOrder> findOneByShopkeeperIdAndDate(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
-    @Query("SELECT so FROM ShopkeeperOrder so where so.date = :date and so.distributorArea.id = :distributorId")
-    List<ShopkeeperOrder> findActiveByDistributorAreaAndDate(@Param("date") LocalDate date,@Param("distributorId") Long distributorId);
+    @Query("SELECT so FROM ShopkeeperOrder so where so.date = :date and so.distributorArea.id = :distributorAreaId")
+    List<ShopkeeperOrder> findActiveByDistributorAreaAndDate(@Param("date") LocalDate date,@Param("distributorAreaId") Long distributorAreaId);
 
     @Query("SELECT so FROM ShopkeeperOrder so where so.date > :date and so.shopkeeper.id = :shopkeeperId and (so.dueAmount !=null and so.dueAmount > 0)")
     List<ShopkeeperOrder> findAllDues(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
@@ -40,4 +40,5 @@ public interface ShopkeeperOrderRepo extends JpaRepository<ShopkeeperOrder, Long
     @Modifying
     @Query("UPDATE ShopkeeperOrder so SET paidAmount=:paidAmount where id=:id")
     void updatePaidAmount(@Param("id") Long id, @Param("paidAmount") Double paidAmount);
+
 }

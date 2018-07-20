@@ -1,11 +1,13 @@
 package org.product.distributor.services;
 
 import org.product.distributor.constant.ShopkeeperOrderStatus;
+import org.product.distributor.dto.ShopkeeperBillDTO;
 import org.product.distributor.dto.order.DailySellGridDataDTO;
 import org.product.distributor.dto.order.DailySellRowDataDTO;
 import org.product.distributor.dto.OrderProductDTO;
-import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.dto.search.OrderProductSearchDTO;
+import org.product.distributor.error.exception.InvalidDailyOrderCreateReqException;
+import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
 import org.product.distributor.mapper.DailySellRowDataMapper;
 import org.product.distributor.mapper.OrderProductMapper;
 import org.product.distributor.model.*;
@@ -43,6 +45,9 @@ public class OrderProductService {
     @Autowired
     private ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo;
 
+    @Autowired
+    private ShopkeeperBillService shopkeeperBillService;
+
     public OrderProductService(OrderProductRepo orderProductRepo, OrderProductMapper orderProductMapper, ProductRepo productRepo, ShopkeeperRepo shopkeeperRepo, ShopkeeperOrderRepo shopkeeperOrderRepo, DailySellRowDataMapper dailySellRowDataMapper, ShopkeeperOrderService shopkeeperOrderService) {
         this.orderProductRepo = orderProductRepo;
         this.orderProductMapper = orderProductMapper;
@@ -66,11 +71,33 @@ public class OrderProductService {
         return null;
     }
 
-    public OrderProduct saveOrderProduct(OrderProductDTO orderProductDTO){
+    public DailySellGridDataDTO saveOrderProductByWeight(OrderProductDTO orderProductDTO){
 
-        OrderProduct orderProduct = orderProductMapper.mapWithoutCustomPrice(orderProductDTO);
+        OrderProduct orderProduct = null;
+
+        //verify if by weight already present
+        Optional<OrderProduct> orderProductOptional = orderProductRepo.findByWieght(orderProductDTO.getOrderId(), orderProductDTO.getProductId(), orderProductDTO.getProductWeightPriceId());
+
+        if(orderProductOptional.isPresent()) // present update existing one.
+            orderProduct = orderProductOptional.get();
+        else // create new one.
+            orderProduct = orderProductMapper.mapWithoutCustomPrice(orderProductDTO);
+
         orderProduct.setSellingPrice(productWeightPriceRepo.findById(orderProductDTO.getProductWeightPriceId()).get().getSellingPrice());
-        return orderProductRepo.save(orderProduct);
+        orderProduct.setQuantity(orderProductDTO.getQuantity());
+
+        orderProduct = orderProductRepo.save(orderProduct);
+
+        shopkeeperOrderService.calculateAndSaveOrderBill(orderProductDTO.getOrderId());
+
+        return getGridData(orderProduct.getShopkeeperOrder().getId());
+    }
+
+    public DailySellGridDataDTO getGridData(Long shopkeeperOrderId){
+        ShopkeeperOrder shopkeeperOrder = shopkeeperOrderRepo.getOne(shopkeeperOrderId);
+
+        return getDistributorAreaDayOrders(shopkeeperOrder.getDate(), shopkeeperOrder.getDistributorArea().getId());
+
     }
 
     public OrderProduct updateOrderProduct(OrderProductDTO orderProductDTO){
@@ -167,7 +194,7 @@ public class OrderProductService {
         }
     }
 
-    public DailySellGridDataDTO getDistributorAreaDayOrders(LocalDate date, Long distributorId){
+    public DailySellGridDataDTO getDistributorAreaDayOrders(LocalDate date, Long distributorAreaId){
 
         List<DailySellRowDataDTO> dailySellRowDataDTOS = new ArrayList<>();
 
@@ -177,7 +204,7 @@ public class OrderProductService {
 
         Double grandTotalAmount=0.0, grandTotalPaidAmount=0.0, grandTotalDueAmount=0.0;
 
-        List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorId);
+        List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorAreaId);
         shopkeeperOrderList.forEach(so -> shopkeeperOrderIdList.add(so.getId()));
 
         List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderIds(shopkeeperOrderIdList);
@@ -191,12 +218,26 @@ public class OrderProductService {
                             .collect(Collectors.toList())
             );
 
+            Long shopkeeperId = shopkeeperOrder.getShopkeeper().getId();
+
+            ShopkeeperBillDTO grandBill = shopkeeperBillService.getByShopkeeperAndDate(date, shopkeeperId);
+            if(grandBill == null){
+                shopkeeperBillService.saveShopkeeperBill(date, shopkeeperId, shopkeeperOrder.getTotalAmount(), shopkeeperOrder.getPaidAmount());
+                grandBill = shopkeeperBillService.getByShopkeeperAndDate(date, shopkeeperId);//pull again
+            }
+            if(grandBill !=null) {
+                dailySellRowDataDTO.setBillTotalPrice(grandBill.getGrandTotal());
+                dailySellRowDataDTO.setBillPaidPrice(grandBill.getGrandPaid());
+                dailySellRowDataDTO.setBillDuePrice(grandBill.getGrandDue());
+            }
+
             dailySellRowDataDTO.processByWeight();// process and put same product in list.
             dailySellRowDataDTOS.add(dailySellRowDataDTO);
 
-            grandTotalAmount += shopkeeperOrder.getTotalAmount();
-            grandTotalPaidAmount += shopkeeperOrder.getPaidAmount();
-            grandTotalDueAmount +=shopkeeperOrder.getDueAmount();
+            grandTotalAmount += grandBill.getGrandTotal();//shopkeeperOrder.getTotalAmount();
+            grandTotalPaidAmount += grandBill.getGrandPaid();//
+            grandTotalDueAmount +=grandBill.getGrandDue();
+
         }
 
 
@@ -209,6 +250,8 @@ public class OrderProductService {
             dailySellGridDataDTO.setGrandTotalAmount(grandTotalAmount);
             dailySellGridDataDTO.setGrandTotalPaidAmount(grandTotalPaidAmount);
             dailySellGridDataDTO.setGrandTotalDueAmount(grandTotalDueAmount);
+
+            dailySellGridDataDTO.setHasFutureOrder(hasFutureOrder(date, distributorAreaId));
         }
         return dailySellGridDataDTO;
     }
@@ -218,15 +261,18 @@ public class OrderProductService {
         return shopkeeperOrderRepo.countByShopkeeperIdAndDate(date, shopkeeperId) > 0 ;
     }
 
-    public void placeEmptyDayOrders(OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException {
+    public void placeEmptyDayOrders(OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException, InvalidDailyOrderCreateReqException {
+        if(isValidCreateRequest(orderProductSearchDTO.getLocalDate()) == false)
+            throw new InvalidDailyOrderCreateReqException("Not allowed to create order on date "+orderProductSearchDTO.getLocalDate() +" wait until day before to create this order.");
         placeEmptyOrderByDistArea(orderProductSearchDTO.getDistributorAreaId(), orderProductSearchDTO.getLocalDate());
     }
 
-    public ShopkeeperOrderDTO updateQuanity(OrderProductDTO orderProductDTO) {
+    public void updateQuanity(OrderProductDTO orderProductDTO) {
 
         orderProductRepo.updateQuanitity(orderProductDTO.getId(), orderProductDTO.getQuantity());
 
-        return shopkeeperOrderService.calculateAndSaveOrderBill(orderProductDTO.getOrderId());
+        shopkeeperOrderService.calculateAndSaveOrderBill(orderProductDTO.getOrderId());
+
     }
 
     public void updateSellingPrice(Long orderId, ShopkeeperCustomPrice shopkeeperCustomPrice, Double price) {
@@ -236,7 +282,7 @@ public class OrderProductService {
             orderProduct.setSellingPrice(price);
             orderProduct.setShopkeeperCustomPrice(shopkeeperCustomPrice);
             orderProductRepo.save(orderProduct);
-            shopkeeperOrderService.calculateAndSaveOrderBill(orderId);
+            shopkeeperOrderService.calculateAndSaveOrderBill(orderProduct.getShopkeeperOrder().getId());
 
         }
     }
@@ -244,10 +290,16 @@ public class OrderProductService {
     /**
      * Copy will copy by values
      */
-    public void copyOrderFromYesterday(Long orderId) {
+    public void copyOrderFromYesterday(Long orderId) throws InvalidDailyOrderCreateReqException {
+
         Optional<ShopkeeperOrder> shopkeeperOrderOptional = shopkeeperOrderRepo.findById(orderId);
         if (!shopkeeperOrderOptional.isPresent())
             return;
+
+        if(isValidCreateRequest(shopkeeperOrderOptional.get().getDate()) == false)
+            throw new InvalidDailyOrderCreateReqException("Not allowed to create order on date "+shopkeeperOrderOptional.get().getDate() +" wait until day before to create this order.");
+
+
         ShopkeeperOrder shopkeeperOrder = shopkeeperOrderOptional.get();
         Optional<ShopkeeperOrder> oneByShopkeeperIdAndDate = shopkeeperOrderRepo.findOneByShopkeeperIdAndDate(shopkeeperOrder.getDate().minusDays(1)
                 , shopkeeperOrder.getShopkeeper().getId());
@@ -360,4 +412,47 @@ public class OrderProductService {
 
     }
 
+    public void deleteByShopkeeperOrderId(Long shopkeeperOrderId){
+        orderProductRepo.deleteByShopkeeperOrderId(shopkeeperOrderId);
+    }
+
+    public void deleteDayOrder(LocalDate date, Long distributorAreaId) throws InvalidDailyOrderDeleteException {
+        //sequence of delete
+        /**
+         * 1. delete SHOPKEEPER_BILL
+         * 2. delete SHOPKEEPER_CUSTOM_PRICE
+         * 3. delete ORDER_PRODUCT
+         * 4. delete SHOPKEEPER_ORDER
+         */
+
+        //TODO: Validation Can not delete this if date is in past or future date has a orders
+        //TODO: Some questions if they do not use it for one day this applicaiton how should be due date calculation will be done
+
+        if(hasFutureOrder(date, distributorAreaId)){
+            throw new InvalidDailyOrderDeleteException("Day order can't be deleted as future order present and depend on this order for due calculation.");
+        }
+
+        List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorAreaId);
+
+        shopkeeperOrderList.forEach(shopkeeperOrder -> {
+            Long shopkeeperId = shopkeeperOrder.getShopkeeper().getId();
+            shopkeeperBillService.deleteByDateAndShopkeeperId(date, shopkeeperId);
+            shopkeeperCustomPriceService.deleteByShopkeeperOrderId(shopkeeperOrder.getId());
+            deleteByShopkeeperOrderId(shopkeeperOrder.getId());
+            shopkeeperOrderService.deleteById(shopkeeperOrder.getId());
+        });
+    }
+
+    public Boolean hasFutureOrder(LocalDate localDate, Long distributorAreaId) {
+        LocalDate nextDay = localDate.plusDays(1);
+        return shopkeeperOrderRepo.countBydistributorAreaIdAndDate(nextDay, distributorAreaId) >0;
+    }
+
+    public Boolean isValidCreateRequest(LocalDate localDate){
+
+        LocalDate today = LocalDate.now();
+        if(localDate.compareTo(today) < 2)
+            return true;
+        return false;
+    }
 }

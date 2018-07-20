@@ -45,3 +45,19 @@ values (1,1),
 (4,2),
 (5,2),
 (6,2);
+
+
+INSERT INTO AUTHORITY VALUES(1,'ROLE_ADMIN'),(2,'ROLE_USER');
+
+
+INSERT INTO USERS(ID, EMAIL, ENABLED, FIRST_NAME, LAST_NAME, LAST_PASSWORD_RESET_DATE, PASSWORD, PHONE_NUMBER, USERNAME)
+values
+(1,'s@s.com',TRUE,'Sidharth','Hande','2018-07-20 18:17:59.487','$2a$10$VngQHgVQCbLvNYacDdvr3uukXQY4nUdPkTYcIKjbG1sY1PX7Tnmma',null,'admin'),
+(2,'u@u.com',TRUE,'Sradha','H','2018-07-20 18:17:59.487','$2a$10$Pl6V9ssdS7yKmo2W4qJ1rOfLfg3q8ewIc/5m2YcsP9gM8V9teH0pG',null,'user'),
+(3,'sys@sys.com',TRUE,'Prathibha','H','2018-07-20 18:17:59.487','$2a$10$H94KgybNlC1TA7LqRWkxBeaaUi7/PmvkmeGky/aHO7.tG.YLKjDLi',null,'system');
+
+-- For now all are admin users
+INSERT INTO USER_AUTHORITY (USER_ID, AUTHORITY_ID)
+VALUES( 1,1),
+( 2,1),
+( 3,1);

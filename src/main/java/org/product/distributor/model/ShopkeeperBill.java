@@ -3,9 +3,11 @@ package org.product.distributor.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 /**
  * Created by vikram on 17/07/18.
+ *
  */
 @Entity
 @Data
@@ -18,12 +20,15 @@ public class ShopkeeperBill {
     private Shopkeeper shopkeeper;
 
     @Column
-    private Double grandTotal;
+    private Double grandTotal = 0.0;
 
     @Column
-    private Double grandPaid;
+    private Double grandPaid = 0.0;
 
     @Column
-    private Double grandDue;
+    private Double grandDue = 0.0;
+
+    @Column
+    private LocalDate date;
 
 }
