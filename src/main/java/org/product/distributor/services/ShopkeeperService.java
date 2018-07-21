@@ -11,6 +11,7 @@ import org.product.distributor.repository.OrderProductRepo;
 import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.product.distributor.repository.ShopkeeperRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Optional;
  *
  */
 @Service
+@Transactional
 public class ShopkeeperService {
 
     private ShopkeeperRepo shopkeeperRepo;

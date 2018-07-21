@@ -22,7 +22,7 @@ public class DistributorArea {
     @Size(max = 100)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "distributor_id")
     private Distributor distributor;
 

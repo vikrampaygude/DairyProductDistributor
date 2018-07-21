@@ -11,6 +11,7 @@ import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.product.distributor.repository.ShopkeeperRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Created by vikram on 17/07/18.
  */
 @Service
+@Transactional
 public class ShopkeeperBillService {
 
     private ShopkeeperBillRepo shopkeeperBillRepo;

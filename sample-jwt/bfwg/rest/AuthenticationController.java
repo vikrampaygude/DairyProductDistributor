@@ -1,22 +1,26 @@
-package org.product.distributor.web.rest.auth;
+package com.bfwg.rest;
 
-import org.product.distributor.dto.UserDTO;
-import org.product.distributor.model.auth.User;
-import org.product.distributor.model.auth.UserTokenState;
-import org.product.distributor.security.TokenHelper;
-import org.product.distributor.security.auth.JwtAuthenticationRequest;
-import org.product.distributor.services.auth.CustomUserDetailsService;
+import com.bfwg.common.DeviceProvider;
+import com.bfwg.model.User;
+import com.bfwg.model.UserTokenState;
+import com.bfwg.security.TokenHelper;
+import com.bfwg.security.auth.JwtAuthenticationRequest;
+import com.bfwg.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mobile.device.Device;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,9 +32,9 @@ import java.util.Map;
 /**
  * Created by fan.jin on 2017-05-10.
  */
-@CrossOrigin
+
 @RestController
-@RequestMapping( value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE )
+@RequestMapping( value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE )
 public class AuthenticationController {
 
     @Autowired
@@ -43,11 +47,14 @@ public class AuthenticationController {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    @Autowired
+    private DeviceProvider deviceProvider;
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(
             @RequestBody JwtAuthenticationRequest authenticationRequest,
-            HttpServletResponse response
+            HttpServletResponse response,
+            Device device
     ) throws AuthenticationException, IOException {
 
         // Perform the security
@@ -63,8 +70,8 @@ public class AuthenticationController {
 
         // token creation
         User user = (User)authentication.getPrincipal();
-        String jws = tokenHelper.generateToken( user.getUsername());
-        int expiresIn = tokenHelper.getExpiredIn();
+        String jws = tokenHelper.generateToken( user.getUsername(), device);
+        int expiresIn = tokenHelper.getExpiredIn(device);
         // Return the token
         return ResponseEntity.ok(new UserTokenState(jws, expiresIn));
     }
@@ -78,13 +85,13 @@ public class AuthenticationController {
 
         String authToken = tokenHelper.getToken( request );
 
-
+        Device device = deviceProvider.getCurrentDevice(request);
 
         if (authToken != null && principal != null) {
 
             // TODO check user password last update
-            String refreshedToken = tokenHelper.refreshToken(authToken);
-            int expiresIn = tokenHelper.getExpiredIn();
+            String refreshedToken = tokenHelper.refreshToken(authToken, device);
+            int expiresIn = tokenHelper.getExpiredIn(device);
 
             return ResponseEntity.ok(new UserTokenState(refreshedToken, expiresIn));
         } else {
@@ -101,23 +108,6 @@ public class AuthenticationController {
         result.put( "result", "success" );
         return ResponseEntity.accepted().body(result);
     }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
-        userDetailsService.register(userDTO);
-        return ResponseEntity.accepted().body(userDTO);
-    }
-
-    @PostMapping("/logout")
-    public void register(            HttpServletRequest request,
-                                                  HttpServletResponse response,
-                                                  Principal principal
-    ) {
-        String authToken = tokenHelper.getToken( request );
-        //tokenHelper.expireTokens(authToken);
-    }
-
-
 
     static class PasswordChanger {
         public String oldPassword;

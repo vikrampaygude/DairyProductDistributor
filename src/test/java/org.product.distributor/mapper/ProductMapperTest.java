@@ -1,6 +1,5 @@
 package org.product.distributor.mapper;
 
-import com.sun.tools.javac.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.product.distributor.dto.DistributorAreaDTO;
@@ -10,6 +9,9 @@ import org.product.distributor.model.DistributorArea;
 import org.product.distributor.model.Product;
 import org.product.distributor.model.ProductBrand;
 import org.product.distributor.model.ProductWeightPrice;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by vikram on 04/07/18.
@@ -46,7 +48,7 @@ public class ProductMapperTest {
         productWeightPrice2.setPurchasePrice(10.50);
         productWeightPrice2.setSellingPrice(12.50);
 
-        product.setProductWeightPriceList(List.of(productWeightPrice, productWeightPrice2));
+        product.setProductWeightPriceList(Arrays.asList(productWeightPrice, productWeightPrice2));
 
         DistributorArea distributorArea = new DistributorArea();
         distributorArea.setId(1111L);
@@ -56,7 +58,7 @@ public class ProductMapperTest {
         distributorArea2.setId(2222L);
         distributorArea2.setName("Bibwewadi");
 
-        List<DistributorArea>  distributorAreaList = List.of(distributorArea, distributorArea2);
+        List<DistributorArea>  distributorAreaList = Arrays.asList(distributorArea, distributorArea2);
 
         product.setDistributorAreaList(distributorAreaList);
 
@@ -103,7 +105,7 @@ public class ProductMapperTest {
         productWeightPriceDTO2.setSellingPrice(12.50);
         productWeightPriceDTO2.setProductId(productDTO.getId());
 
-        List<ProductWeightPriceDTO> list = List.of(productWeightPriceDTO, productWeightPriceDTO2);
+        List<ProductWeightPriceDTO> list = Arrays.asList(productWeightPriceDTO, productWeightPriceDTO2);
         productDTO.setProductWeightPriceDTOList(list);
 
         DistributorAreaDTO distributorAreaDTO = new DistributorAreaDTO();
@@ -114,7 +116,7 @@ public class ProductMapperTest {
         distributorAreaDTO2.setId(2222L);
         distributorAreaDTO2.setName("Bibwewadi");
 
-        List<DistributorAreaDTO>  distributorAreaDTOList = List.of(distributorAreaDTO, distributorAreaDTO2);
+        List<DistributorAreaDTO>  distributorAreaDTOList = Arrays.asList(distributorAreaDTO, distributorAreaDTO2);
 
         productDTO.setDistributorAreaDTOList(distributorAreaDTOList);
 

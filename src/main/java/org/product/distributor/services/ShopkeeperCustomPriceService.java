@@ -6,6 +6,7 @@ import org.product.distributor.model.Product;
 import org.product.distributor.model.ShopkeeperCustomPrice;
 import org.product.distributor.repository.ShopkeeperCustomPriceRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Optional;
  *
  */
 @Service
+@Transactional
 public class ShopkeeperCustomPriceService {
 
     private ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo;

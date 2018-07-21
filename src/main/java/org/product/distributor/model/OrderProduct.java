@@ -33,7 +33,7 @@ public class OrderProduct {
     @OneToOne
     private ShopkeeperCustomPrice shopkeeperCustomPrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "shopkeeper_order_id")
     private ShopkeeperOrder shopkeeperOrder;
 

@@ -7,6 +7,7 @@ import org.product.distributor.model.ShopkeeperOrder;
 import org.product.distributor.repository.OrderProductRepo;
 import org.product.distributor.repository.ShopkeeperOrderRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDate;
@@ -19,6 +20,7 @@ import java.util.Optional;
  *
  */
 @Service
+@Transactional
 public class ShopkeeperOrderService {
 
 

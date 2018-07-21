@@ -14,6 +14,7 @@ import org.product.distributor.model.*;
 import org.product.distributor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  *
  */
 @Service
+@Transactional
 public class OrderProductService {
 
     private OrderProductRepo orderProductRepo;

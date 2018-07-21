@@ -5,6 +5,7 @@ import org.product.distributor.mapper.ProductMapper;
 import org.product.distributor.model.Product;
 import org.product.distributor.repository.ProductRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  *
  */
 @Service
+@Transactional
 public class ProductService {
 
     private ProductRepo productRepo;

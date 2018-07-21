@@ -3,6 +3,28 @@ app:
 
 jwt:
   header: Authorization
-  expires_in: 300 # 5 minutes
-  mobile_expires_in: 600 # 10 minutes
+  expires_in: 7200 # 2 hours
+  mobile_expires_in: 7200 # 2hours
   secret: kingvikram
+
+spring:
+  profiles:
+    active: development
+# Database
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/distributor
+    username: distributor_user
+    password: distributor354
+# JPA properties
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+  h2:
+      console:
+          enabled: false
