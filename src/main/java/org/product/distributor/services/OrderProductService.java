@@ -42,9 +42,6 @@ public class OrderProductService {
     private ProductWeightPriceRepo productWeightPriceRepo;
 
     @Autowired
-    private ShopkeeperCustomPriceService shopkeeperCustomPriceService;
-
-    @Autowired
     private ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo;
 
     @Autowired
@@ -147,7 +144,7 @@ public class OrderProductService {
             productList.forEach(product -> {
                 OrderProduct orderProduct = OrderProduct.getObject(product, shopkeeperOrder);
 
-                ShopkeeperCustomPrice  shopkeeperCustomPrice = shopkeeperCustomPriceService.getProductCustomPrice(product, shopkeeperOrder.getId());
+                ShopkeeperCustomPrice  shopkeeperCustomPrice = getProductCustomPrice(product, shopkeeperOrder.getId());
                 if(shopkeeperCustomPrice!=null)
                     orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
 
@@ -165,6 +162,12 @@ public class OrderProductService {
         shopkeeperOrderRepo.saveAll(shopkeepersOrderList);
     }
 
+    private ShopkeeperCustomPrice getProductCustomPrice(Product product, Long shopkeeperOrderId){
+        Optional<ShopkeeperCustomPrice> shopkeeperCustomPrice = shopkeeperCustomPriceRepo.findByShopkeeperOrderAndProduct(product.getId(), shopkeeperOrderId);
+        return shopkeeperCustomPrice.isPresent()?shopkeeperCustomPrice.get():null;
+    }
+
+
     public void applyLatestPrices(Long distributorAreaId, LocalDate localDate) {
         List<ShopkeeperOrder> shopkeepersOrderList = shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(localDate, distributorAreaId);
 
@@ -174,7 +177,7 @@ public class OrderProductService {
 
             Double totalPrices = 0.0;
             for (OrderProduct orderProduct : orderProductList) {
-                ShopkeeperCustomPrice shopkeeperCustomPrice = shopkeeperCustomPriceService.getProductCustomPrice(orderProduct.getProduct(), shopkeeperOrder.getId());
+                ShopkeeperCustomPrice shopkeeperCustomPrice = getProductCustomPrice(orderProduct.getProduct(), shopkeeperOrder.getId());
                 if (shopkeeperCustomPrice != null)
                     orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
 
@@ -439,7 +442,7 @@ public class OrderProductService {
         shopkeeperOrderList.forEach(shopkeeperOrder -> {
             Long shopkeeperId = shopkeeperOrder.getShopkeeper().getId();
             shopkeeperBillService.deleteByDateAndShopkeeperId(date, shopkeeperId);
-            shopkeeperCustomPriceService.deleteByShopkeeperOrderId(shopkeeperOrder.getId());
+            shopkeeperCustomPriceRepo.deleteByShopkeeperOrderId(shopkeeperOrder.getId());
             deleteByShopkeeperOrderId(shopkeeperOrder.getId());
             shopkeeperOrderService.deleteById(shopkeeperOrder.getId());
         });
