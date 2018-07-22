@@ -164,7 +164,7 @@ public class OrderProductService {
 
     private ShopkeeperCustomPrice getProductCustomPrice(Product product, Long shopkeeperOrderId){
         Optional<ShopkeeperCustomPrice> shopkeeperCustomPrice = shopkeeperCustomPriceRepo.findByShopkeeperOrderAndProduct(product.getId(), shopkeeperOrderId);
-        return shopkeeperCustomPrice.isPresent()?shopkeeperCustomPrice.get():null;
+        return shopkeeperCustomPrice.orElse(null);
     }
 
 
