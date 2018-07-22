@@ -1,0 +1,34 @@
+<div class="row align-items-center">  
+  <div class="col col-md-4">
+    <h2>Product Brands</h2>
+  </div>
+  <div class="col col-md-4  ">
+    <h2 class="pull-right">
+      <a class="btn btn-info" routerLink="/product-brand/new" role="button">New Product Brand</a>
+    </h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <table class="table table-sm table-bordered ">
+      <thead>
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Short name</th>
+          <th scope="col">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let productBrand of productBrands">
+          <th scope="row" >{{productBrand.id}}</th>
+          <td>{{productBrand.name}}</td>
+          <td>{{productBrand.shortName}}</td>
+          <td>
+            <a class="btn btn-sm btn-primary" routerLink="/product-brand/edit/{{productBrand.id}}" role="button">edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

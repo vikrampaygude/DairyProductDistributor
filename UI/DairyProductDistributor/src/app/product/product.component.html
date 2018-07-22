@@ -1,0 +1,57 @@
+<div class="row align-items-center">  
+  <div class="col col-md-4">
+    <h2>Products</h2>
+  </div>
+  <div class="col col-md-4  ">
+    <h2 class="pull-right">
+      <a class="btn btn-info" routerLink="/product/new" role="button">New Product</a>
+    </h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <table class="table table-sm table-bordered ">
+      <thead>
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Short name</th>
+          <th scope="col">Product brand</th>
+          <th> 1 Unit (liter,kg)  price </th>
+          <th scope="col">Unit of measure</th>
+          <th scope="col">Quantiry : Price</th>
+          <th scope="col">Distributed in area </th>
+          <th scope="col">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products">
+          <th scope="row" >{{product.id}}</th>
+          <td>{{product.name}}</td>
+          <td>{{product.shortName}}</td>
+          <td>{{product.brandName}}</td>
+          <td>
+            selling price: {{product.sellingPrice}}
+            <br/>
+            purchase price : {{product.purchasePrice}}
+          </td>
+          <td>{{product.unitOfMeasure}}</td>
+          <td>
+            <span *ngFor="let productQuantityPrice of product.productQuantityPriceDTOList">
+                Quantity: {{productQuantityPrice.quantity }} {{product.unitOfMeasure}} price: {{productQuantityPrice.sellingPrice}} , 
+            </span>
+          </td>
+          <td>
+              <span *ngFor="let distributorArea of product.distributorAreaDTOList">
+                {{distributorArea.name }} 
+              </span>
+          </td>
+          <td>
+            <a class="btn btn-sm btn-primary" routerLink="/product/edit/{{product.id}}" role="button">edit</a>
+            <a class="btn btn-sm btn-primary" routerLink="/product/{{product.id}}/weight-price" role="button">view prices</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

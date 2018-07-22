@@ -1,0 +1,41 @@
+<div class="row align-items-center">  
+  <div class="col col-md-4">
+    <h2>weight Prices </h2>
+    <h4>{{product.name}} (<small>{{product.brandName}}</small>)</h4>
+      
+    
+  </div>
+  <div class="col col-md-4  ">
+    <h2 class="pull-right">
+      <a class="btn btn-info" routerLink="/product/{{product.id}}/weight-price/new" role="button">New Product weight Price</a>
+    </h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <table class="table table-sm table-bordered ">
+      <thead>
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Weight</th>
+          <th scope="col">Selling price</th>
+          <th scope="col">Purchase price</th>
+          <th scope="col">Product id</th>
+          <th scope="col">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let productWeightPrice of productWeightPrices">
+          <td scope="row" >{{productWeightPrice.id}}</td>
+          <td>{{productWeightPrice.weight}} </td>
+          <td>{{productWeightPrice.sellingPrice}}</td>
+          <td>{{productWeightPrice.purchasePrice}}</td>
+          <td>{{productWeightPrice.productId}}</td>
+          <td>
+            <a class="btn btn-sm btn-primary" routerLink="/product/{{product.id}}/weight-price/edit/{{productWeightPrice.id}}" role="button">edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

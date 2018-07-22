@@ -1,0 +1,260 @@
+<div class="row align-items-center">  
+  <div class="col col-md-4">
+    <h2>orders</h2>
+  </div>
+</div>
+<form (ngSubmit)="onSubmit()" #ordersSearchForm="ngForm">
+  <div class="row">
+    <div class="col-md-2">
+      <label>Date
+      </label>
+        <i class="fas fa-arrow-left" (click) ="changeDate(-1)" style="color:#4286f4;padding-left:10px"></i>   
+        <i class="fas fa-arrow-right" (click) ="changeDate(1)" style="color:#4286f4;padding-left:10px"></i>
+      <input required type="date" (change)="onSubmit()" [(ngModel)]="ordersSearch.date" name="date" class="form-control-sm form-control" id="date" placeholder="Select date">
+    </div>
+    <div class="col-md-2">
+        <label for="name">Distributor Area</label>
+        <select required [(ngModel)]="ordersSearch.distributorAreaId" name="distributorAreaId" #distributorAreaId="ngModel" class="form-control-sm form-control" id="distributorAreaId">
+            <option *ngFor="let distributorArea of distributorAreas" [ngValue]="distributorArea.id">{{distributorArea.name}}</option>
+        </select>
+    </div>
+    <div class="col-md-2" style="margin-top: 0.5rem">
+        <label></label>
+        <button type="submit" class="btn btn-sm btn-primary" style="margin-top:25px"
+        [disabled]="!ordersSearchForm.form.valid">search</button>
+    </div>
+  </div>
+</form>
+<div class="row">
+
+  <div class="col-md-8 float-left pb-2">
+  <form (ngSubmit)="newOrderFormOnSubmit()" class="form-row" #newOrderForm="ngForm" *ngIf="toggleAddByWeight == true" >
+      <div class="col-md-2">
+        <label>Shopkeeper</label>
+        <select required [(ngModel)]="newOrder.shopkeeperId" name="shopkeeperId" #shopkeeperId="ngModel" class="form-control form-control-sm" id="shopkeeperId">
+            <option *ngFor="let shopkeeper of shopkeepers" [ngValue]="shopkeeper.id">{{shopkeeper.name}}</option>
+        </select>
+     </div>
+      <div class="col-md-2">
+          <label for="name">Product</label>
+          <select required [(ngModel)]="newOrder.productId" (change) = "setProductWeightPrices()" name="productId" #productId="ngModel" class="form-control form-control-sm" id="productId">
+              <option *ngFor="let product of products" [ngValue]="product.id">{{product.name}}</option>
+          </select>
+      </div>
+      <div class="col-md-2">
+          <label for="name">Weight</label>
+          <select required [(ngModel)]="newOrder.productWeightPriceId" name="productWeightPriceId" #productWeightPriceId="ngModel" class="form-control form-control-sm" id="productWeightPriceId">
+              <option *ngFor="let qPrice of productWeightPrices" [ngValue]="qPrice.id">{{qPrice.weight}} - {{qPrice.sellingPrice}}</option>
+          </select>
+      </div>
+      <div class="col-md-2">
+          <label for="name">Quantity</label>
+          <input required type="number" [(ngModel)]="newOrder.quantity" name="quantity" class="form-control-sm form-control" id="quantity" placeholder="Enter weight">
+      </div>
+      <div class="col-md-2 ">
+          <label> Operation</label>
+          <div>
+            <button type="submit" class="btn btn-sm btn-success"
+            [disabled]="!newOrderForm.form.valid">Submit</button>
+            <button type="button" (click)="toggleAddByWeight=!toggleAddByWeight" class="btn btn-sm btn-secondary ml-2">
+                Cancel
+            </button>
+          </div>
+      </div>
+  </form>
+  <form (ngSubmit)="customPriceFormOnSubmit()" #customPriceForm="ngForm" *ngIf="toggleCustomPrice == true" style="margin-bottom: 5px" >
+      <div class="form-row">
+        <div class="col-md-2">
+            <label for="name">Shopkeeper Name</label>
+            <div>
+              {{customPrice.shopkeeperName}}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label for="name">Product Name</label>
+            <div>
+              {{customPrice.productName}}  
+              <span *ngIf="customPrice.productWeight!=null">( {{customPrice.productWeight}} )</span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <label for="name">Custom price *</label>
+            <input required type="number" [(ngModel)]="customPrice.price" name="price" class="form-control-sm form-control" id="price" placeholder="Enter price">
+        </div>
+        <div class="col-md-2">
+          <label> Operation</label>
+          <div>
+            <button type="submit" class="btn btn-sm btn-success ml-2">
+              <span *ngIf="customPrice.id !=null">Update</span>
+              <span *ngIf="customPrice.id == null">Add</span>
+            </button>
+            <button type="button" (click)="toggleCustomPrice=!toggleCustomPrice" class="btn btn-sm btn-secondary ml-2">
+                Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class=" col-md-4 float-right pb-5 " *ngIf="orderGridData != null">
+      <div class="float-right pl-2">
+        <button type="button" class="btn-sm btn-info" (click)="applyLatestPrices()">Apply prices</button>
+      </div>
+      <div class="float-right pl-2">
+        <button type="button" class="btn-sm btn-primary" (click)="onSubmit()">Refresh </button>
+      </div>
+      <div class="float-right pl-2" >
+          <button type="button" class="btn-sm btn-success" (click)="toggleAddByWeight= !toggleAddByWeight"> Add by weight</button>
+      </div>
+      <div class="float-right pl-2">
+        <button type="button" *ngIf="orderGridData.hasFutureOrder == false" class="btn-sm btn-danger" (click)="deleteDayOrder()"> Delete</button>
+    </div>
+    <div class="float-right pl-2">
+        <button type="button" *ngIf="orderGridData.hasFutureOrder == false" class="btn-sm btn-warning" (click)="print()"> Print</button>
+    </div>
+  </div>
+    
+</div>
+<div class="row" *ngIf="searched && orderGridData == null">
+  <div class="col-md-12">
+      <span>
+        Order not present on date {{ordersSearch.date}}. Click 
+        <button type="button" class="btn btn-sm btn-info ml-1" (click)="createDailyOrder()">Create daily order</button>
+        <button type="button" class="btn btn-sm btn-warning ml-2" (click)="createOrderAsYesterday()">Copy yesterdays order</button>
+        
+      </span>
+  </div>
+</div>
+<div class="row" *ngIf="searched && orderGridData !=null ">
+    <div class="col-md-12">
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th>Shopkeepers</th>
+            <th *ngFor="let product of orderGridData.dailySellRowDataDTOList[0].orderProductDTOS">
+              {{product.productShortName}} {{product.productBrandShortName}}
+
+            </th>
+            <th>Total Amount (Till date) </th>
+            <th>Paid Amount  </th>
+            <th>Due Amount (Till Date) </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let shopkeeperOrder of orderGridData.dailySellRowDataDTOList">
+              <td>{{shopkeeperOrder.shopkeeperOrderDTO.shopkeeperName}}
+                <button type="button" class="btn btn-sm btn-secondary" (click)="copyYesterdayOrder(shopkeeperOrder.shopkeeperOrderDTO.id)">copy yesterday order</button>
+              </td>
+                <td *ngFor="let order of shopkeeperOrder.orderProductDTOS">
+                  
+                 
+                  <input required type="number" 
+                  [(ngModel)]="order.quantity" name="quantity" #orderId{{order.id}}
+                    class='home-grid-input' id="quantity{{order.id}}"
+                  (change)="onChangeUpdateOrder(order, shopkeeperOrder.shopkeeperOrderDTO)"> 
+                  <span (click)="manageCustomPrice(order, shopkeeperOrder.shopkeeperOrderDTO)"><u> {{order.sellingPrice}} Rs</u></span>
+                  <span *ngIf="currentFocusInput == order.id"></span>
+                  <div *ngIf="order.byWeightOrders !=null" style="padding-top:5px;">
+                      <div *ngFor="let orderByWeight of order.byWeightOrders">
+
+                        <input required type="number" class="home-grid-input"
+                        [(ngModel)]="orderByWeight.quantity" name="orderByQuantity" 
+                        style="width:70px" id="quantity{{orderByWeight.id}}"
+                        (change)="onChangeUpdateOrder(orderByWeight, shopkeeperOrder.shopkeeperOrderDTO)">
+                         {{orderByWeight.sellingPrice}} Rs
+                      </div>
+                  </div>
+                </td>
+                <td><!-- Today: {{shopkeeperOrder.shopkeeperOrderDTO.totalAmount}} <br/> --> 
+                  {{shopkeeperOrder.billTotalPrice}}
+                </td>
+                <td>
+                    <input required type="number" 
+                    [(ngModel)]="shopkeeperOrder.shopkeeperOrderDTO.paidAmount" name="paidAmount" 
+                    style="width:100px" id="paidAmount{{shopkeeperOrder.shopkeeperOrderDTO.id}}"
+                    (change)="updatePaidOrder(shopkeeperOrder.shopkeeperOrderDTO)">
+                </td>
+                <td>
+                  <!-- {{shopkeeperOrder.shopkeeperOrderDTO.dueAmount}} -->
+                  {{shopkeeperOrder.billDuePrice}}
+                </td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td *ngFor="let totalRow of orderGridData.dailySellGridTotalDTOS">
+                <div *ngFor="let weightTotal of totalRow.totalByWeight">
+                    <label>{{weightTotal.totalItems}} ({{weightTotal.weight}})</label>
+                </div>  
+              </td>
+              <td><label>{{orderGridData.grandTotalAmount}}</label></td>
+              <td><label>{{orderGridData.grandTotalPaidAmount}}</label></td>
+              <td><label>{{orderGridData.grandTotalDueAmount}}</label></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+</div>
+
+
+<div id="ordersPrintDiv" style="display: none">
+    <div class="row">
+        <div class="col-md-6">
+              <div><b>Line :</b> {{getDistributorName()}}</div>
+              <div><b>Date :</b> {{ordersSearch.date}}</div>
+        </div>
+      </div>
+    <div class="row" *ngIf="searched && orderGridData !=null ">
+        <div class="col-md-12">
+          <table class="table table-sm table-bordered">
+            <thead>
+              <tr style="background-color:#c6cdce">
+                <th>Shopkeepers</th>
+                <th *ngFor="let product of orderPrintGridData.dailySellRowDataDTOList[0].orderProductDTOS">
+                  {{product.productShortName}} {{product.productBrandShortName}}
+    
+                </th>
+                <th>Total Amount</th>
+                <th>Paid Amount</th>
+                <th>Due Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let shopkeeperOrder of orderPrintGridData.dailySellRowDataDTOList">
+                  <td style="background-color:#c6cdce">{{shopkeeperOrder.shopkeeperOrderDTO.shopkeeperName}}</td>
+                    <td *ngFor="let order of shopkeeperOrder.orderProductDTOS">
+                      {{order.quantity}} 
+                      <span *ngIf="currentFocusInput == order.id"></span>
+                      <div *ngIf="order.byWeightOrders !=null" style="padding-top:5px;">
+                          <div *ngFor="let orderByWeight of order.byWeightOrders">
+                            {{orderByWeight.quantity}}
+                             ( {{orderByWeight.productWeight}} {{orderByWeight.unitOfMeasure}} )
+                          </div>
+                      </div>
+                    </td>
+                    <td><!-- Today: {{shopkeeperOrder.shopkeeperOrderDTO.totalAmount}} <br/> -->
+                      {{shopkeeperOrder.billTotalPrice}}
+                    </td>
+                    <td>
+                      {{shopkeeperOrder.shopkeeperOrderDTO.paidAmount}}
+                    </td>
+                    <td>
+                      <!-- {{shopkeeperOrder.shopkeeperOrderDTO.dueAmount}} -->
+                      {{shopkeeperOrder.billDuePrice}}
+                    </td>
+                </tr>
+                <tr>
+                  <td style="background-color:#c6cdce"><strong>Total</strong></td>
+                  <td *ngFor="let totalRow of orderGridData.dailySellGridTotalDTOS">
+                    <div *ngFor="let weightTotal of totalRow.totalByWeight">
+                        <label>{{weightTotal.totalItems}} ({{weightTotal.weight}})</label>
+                    </div>  
+                  </td>
+                  <td><label>{{orderGridData.grandTotalAmount}}</label></td>
+                  <td><label>{{orderGridData.grandTotalPaidAmount}}</label></td>
+                  <td><label>{{orderGridData.grandTotalDueAmount}}</label></td>
+                </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+</div>

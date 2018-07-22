@@ -1,0 +1,36 @@
+<div class="row align-items-center">  
+  <div class="col col-md-4">
+    <h2>Custom Prices</h2>
+  </div>
+  <div class="col col-md-4  ">
+    <h2 class="pull-right">
+      <a class="btn btn-info" routerLink="/custom-price/new" role="button">New</a>
+    </h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <table class="table table-sm table-bordered ">
+      <thead>
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Shopkeeper ( Area )</th>
+          <th scope="col">Product Name </th>
+          <th scope="col">Custom price</th>
+          <th scope="col">Operations</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let customPrice of customPrices">
+          <th scope="row" >{{customPrice.id}}</th>
+          <td>{{customPrice.shopkeeperName}}  ( {{customPrice.shopkeeperAreaName}} )</td>
+          <td>{{customPrice.productName}}</td>
+          <td>{{customPrice.price}}</td>
+          <td>
+            <a class="btn btn-sm btn-primary" routerLink="/custom-price/edit/{{customPrice.id}}" role="button">edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

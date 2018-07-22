@@ -1,0 +1,37 @@
+<div class="row">
+  <div class="col col-md-4">
+    <h2>Price by weight</h2>
+    <h4>{{product.name}} (<small>{{product.brandName}}</small>)</h4>
+
+    <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+        <div class="form-group">
+            <label for="weight">weight</label><small>( e.g 1 {{product.unitOfMeasure}}, 0.250 {{product.unitOfMeasure}} )</small>
+            <input required type="number" [(ngModel)]="model.weight" name="weight" #weight="ngModel" class="form-control" id="name" placeholder="Enter weight ">        
+              <div [hidden]="weight.valid || weight.pristine"
+              class="alert alert-danger">
+              weight is required
+              </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="sellingPrice">Selling Price</label><small>( e.g 50.50 Rs, 150 Rs )</small>
+          <input required type="number" [(ngModel)]="model.sellingPrice" name="sellingPrice" #sellingPrice="ngModel" class="form-control" id="name" placeholder="Enter Selling Price">        
+            <div [hidden]="sellingPrice.valid || sellingPrice.pristine"
+            class="alert alert-danger">
+            Selling price is required
+            </div>
+      </div>
+      <!-- Purchase Price-->
+      <div class="form-group">
+          <label for="purchasePrice">Purchase Price</label><small>( e.g 50.50 Rs, 150 Rs )</small>
+          <input required type="text" [(ngModel)]="model.purchasePrice" name="purchasePrice" #purchasePrice="ngModel" class="form-control" id="purchasePrice" placeholder="Enter Purchase Price">        
+            <div [hidden]="purchasePrice.valid || purchasePrice.pristine"
+            class="alert alert-danger">
+            Purchase Price is required
+            </div>
+      </div>
+      <button type="submit" class="btn btn-primary"
+      [disabled]="!productForm.form.valid">save</button>
+    </form>
+  </div>
+</div>

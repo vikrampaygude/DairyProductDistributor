@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col col-md-4">
+    <h2>New Product</h2>
+    <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+      <!-- Product Name -->
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input required type="text" [(ngModel)]="model.name" name="name" #name="ngModel" class="form-control" id="name" placeholder="Enter Name">        
+          <div [hidden]="name.valid || name.pristine"
+          class="alert alert-danger">
+            Name is required
+          </div>
+      </div>
+      <div class="form-group">
+          <label for="name">Short Name</label>
+          <input type="text" [(ngModel)]="model.shortName" name="shortName" #shortName="ngModel" class="form-control" id="name" placeholder="Enter short name">        
+      </div>
+      <!-- Brand-->
+      <div class="form-group">
+          <label for="name">Brand Name</label>
+          <select [(ngModel)]="model.brandId" name="brandId" #distributorId="ngModel" class="form-control" id="brandId">
+              <option *ngFor="let productBrand of productBrands" [ngValue]="productBrand.id">{{productBrand.name}}</option>
+          </select>
+      </div>
+        <!-- Selling Price-->
+      <div class="form-group">
+          <label for="sellingPrice">Selling price</label>
+          <input required type="number" [(ngModel)]="model.sellingPrice" name="sellingPrice" #sellingPrice="ngModel" class="form-control" id="name" placeholder="Enter Selling Price">        
+            <div [hidden]="sellingPrice.valid || sellingPrice.pristine"
+            class="alert alert-danger">
+            Selling price is required
+            </div>
+      </div>
+      <!-- Purchase Price-->
+      <div class="form-group">
+          <label for="purchasePrice">Purchase Price</label>
+          <input required type="text" [(ngModel)]="model.purchasePrice" name="purchasePrice" #purchasePrice="ngModel" class="form-control" id="purchasePrice" placeholder="Enter Purchase Price">        
+            <div [hidden]="purchasePrice.valid || purchasePrice.pristine"
+            class="alert alert-danger">
+            Purchase Price is required
+            </div>
+      </div>
+      <!-- Unit of measure -->
+      <div class="form-group">
+          <label for="unitOfMeasure">Unit of measure</label>
+          <input required type="text" [(ngModel)]="model.unitOfMeasure" name="unitOfMeasure" #unitOfMeasure="ngModel" class="form-control" id="purchasePrice" placeholder="Enter Purchase Price">        
+            <div [hidden]="unitOfMeasure.valid || unitOfMeasure.pristine"
+            class="alert alert-danger">
+            Unit Of Measure Price is required
+            </div>
+      </div>
+      <div class="form-group">
+          <label for="distributorAreaList">Distributor Area List:</label>
+          <div *ngFor="let distributorArea of distributorAreaCheckList">
+              <label>
+                  <input type="checkbox"
+                         name="{{distributorArea.name}}"
+                         [(ngModel)]="distributorArea.checked"/>
+                  {{distributorArea.name}}
+              </label>
+          </div>
+      </div>
+
+
+      <button type="submit" class="btn btn-primary"
+      [disabled]="!productForm.form.valid">save</button>
+    </form>
+  </div>
+</div>
+

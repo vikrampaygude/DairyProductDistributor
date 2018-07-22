@@ -1,0 +1,32 @@
+<div class="row align-items-center">  
+  <div class="col col-md-4">
+    <h2>Distributor</h2>
+  </div>
+  <div class="col col-md-4  ">
+    <h2 class="pull-right">
+      <a class="btn btn-info" routerLink="/distributor/new" role="button">New Distributor</a>
+    </h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <table class="table table-sm table-bordered ">
+      <thead>
+        <tr>
+          <th scope="col">#Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Operation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let distributor of distributors">
+          <th scope="row" >{{distributor.id}}</th>
+          <td>{{distributor.name}}</td>
+          <td>
+            <a class="btn btn-sm btn-primary" routerLink="/distributor/edit/{{distributor.id}}" role="button">edit</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
