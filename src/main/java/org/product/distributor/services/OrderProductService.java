@@ -210,6 +210,10 @@ public class OrderProductService {
         Double grandTotalAmount=0.0, grandTotalPaidAmount=0.0, grandTotalDueAmount=0.0;
 
         List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorAreaId);
+
+        if( shopkeeperOrderList.size() ==0 )
+            return null;
+
         shopkeeperOrderList.forEach(so -> shopkeeperOrderIdList.add(so.getId()));
 
         List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderIds(shopkeeperOrderIdList);
