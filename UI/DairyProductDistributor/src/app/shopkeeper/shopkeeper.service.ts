@@ -12,7 +12,7 @@ const httpOptions = {
 })
 export class ShopkeeperService {
 
-  public url = 'http://localhost:8080/api/shopkeeper';
+  public url = localStorage.getItem('host-root')+'api/shopkeeper';
 
   constructor(  private http: HttpClient) { }
 

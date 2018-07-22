@@ -8,7 +8,10 @@ import { AuthService } from './auth/auth.service';
 })
 export class AppComponent {
   title = 'app';
-    constructor(public authService: AuthService){
+  
+  constructor(public authService: AuthService){
+    localStorage.setItem('host-root', 'http://localhost:8080/');
+    console.log(localStorage.getItem('host-root'));
   }
   
   isLoggedin(){

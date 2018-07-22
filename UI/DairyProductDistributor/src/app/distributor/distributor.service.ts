@@ -14,7 +14,7 @@ const httpOptions = {
 })
 export class DistributorService {
 
-  public url = 'http://localhost:8080/api/distributor';
+  public url = localStorage.getItem('host-root')+'api/distributor';
 
   constructor(  private http: HttpClient) { }
 

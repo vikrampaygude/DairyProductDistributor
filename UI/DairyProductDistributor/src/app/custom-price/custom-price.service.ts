@@ -15,7 +15,7 @@ const httpOptions = {
 })
 export class CustomPriceService {
 
-  public url = 'http://localhost:8080/api/shopkeeper-custom-price';
+  public url = localStorage.getItem('host-root')+'api/shopkeeper-custom-price';
 
   constructor(  private http: HttpClient) { }
 

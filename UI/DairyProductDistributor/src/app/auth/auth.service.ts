@@ -14,7 +14,7 @@ const httpOptions = {
 })
 export class AuthService {
 
-  public url = 'http://localhost:8080/api/auth';
+  public url = localStorage.getItem('host-root')+'api/auth';
 
   loggedIn : boolean = false;
 

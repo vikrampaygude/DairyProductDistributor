@@ -14,7 +14,7 @@ const httpOptions = {
 })
 export class ProductService {
 
-  public url = 'http://localhost:8080/api/product';
+  public url = localStorage.getItem('host-root')+'api/product';
 
   constructor(  private http: HttpClient) { }
 

@@ -14,7 +14,7 @@ const httpOptions = {
 })
 export class ProductWeightPriceService {
 
-  public url = 'http://localhost:8080/api/product-weight-price';
+  public url = localStorage.getItem('host-root')+'api/product-weight-price';
 
   constructor(  private http: HttpClient) { }
 

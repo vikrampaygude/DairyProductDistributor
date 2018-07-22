@@ -19,7 +19,7 @@ const httpOptions = {
 })
 export class OrderService {
 
-  public url = 'http://localhost:8080/api/order';
+  public url = localStorage.getItem('host-root')+'api/order';
 
   public datePipe = new DatePipe("en-US");
 
