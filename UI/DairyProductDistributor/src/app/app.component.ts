@@ -10,7 +10,7 @@ export class AppComponent {
   title = 'app';
   
   constructor(public authService: AuthService){
-    localStorage.setItem('host-root', 'http://localhost:8080/');
+    localStorage.setItem('host-root', '/');
     console.log(localStorage.getItem('host-root'));
   }
   
