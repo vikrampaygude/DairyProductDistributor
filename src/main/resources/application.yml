@@ -30,4 +30,3 @@ spring:
           enabled: false
 server:
   port: ${PORT:5000}
-  
