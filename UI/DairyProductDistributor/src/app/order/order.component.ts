@@ -79,12 +79,14 @@ export class OrderComponent implements OnInit {
   }
 
   deleteDayOrder(){
-    console.log("Daily order click");
-    this.service.deleteDayOrder(this.ordersSearch).subscribe(obj => {
-      console.log(obj);
-      this.onSubmit();
-    });
+    if(confirm("Are you sure to delete this daily order?")) {
+      this.service.deleteDayOrder(this.ordersSearch).subscribe(obj => {
+        console.log(obj);
+        this.onSubmit();
+      });
+    }
   }
+
   createOrderAsYesterday(){
     this.service.createOrderAsYesterday(this.ordersSearch).subscribe(obj => {
       this.onSubmit();
@@ -92,7 +94,9 @@ export class OrderComponent implements OnInit {
   }
 
   copyYesterdayOrder(orderId){
-    this.service.copyYesterdayOrder(orderId).subscribe(data => this.orderGridData = data);
+    if(confirm("Are you sure to copy yesterdays order ?")) {
+      this.service.copyYesterdayOrder(orderId).subscribe(data => this.orderGridData = data);
+    }
   }
 
   customPriceFormOnSubmit(){

@@ -39,8 +39,12 @@ export class ShopkeeperComponent implements OnInit {
     });
   }
   
-  delete(id: number){
-    this.distributorAreaService.  
+  delete(shopkeeper: Shopkeeper){
+    this.service.deleteById(shopkeeper.id).subscribe(res =>{
+      let i = 0;
+      var index = this.shopkeepers.indexOf(shopkeeper);
+      this.shopkeepers.splice(index, 1)
+    });
   }
 
   newShopkeeper(){

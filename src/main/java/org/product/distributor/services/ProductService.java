@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by vikram on 05/07/18.
@@ -54,4 +55,11 @@ public class ProductService {
         return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductWeightPriceDTOList(), productDTO.getDistributorAreaDTOList()));
     }
 
+    public void deteletById(Long id) {
+        Optional<Product> productOptional = productRepo.findById(id);
+        productOptional.ifPresent(product -> {
+            product.setDeleted(true);
+            productRepo.save(product);
+        });
+    }
 }

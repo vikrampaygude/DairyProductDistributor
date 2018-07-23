@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Register } from '../register/register';
 import { Login } from '../login/login';
-import { Router } from '../../../node_modules/@angular/router';
+import { Router } from '@angular/router';
 
 
 const httpOptions = {

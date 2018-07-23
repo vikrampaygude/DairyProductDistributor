@@ -125,7 +125,6 @@ public class OrderProductService {
         for (Shopkeeper shopkeeper : shopkeeperList) {
 
             // we have to make sure there is only one order for the give date
-            // TODO: one issue if product is added after creating daily order this logic will be blocker
             if(isShopkeeperOrderPresentOnDate(localDate, shopkeeper.getId()))
                 throw new OperationNotSupportedException("Can't create multiple orders on same date. " +
                         "Order for date "+localDate +" already present in database");

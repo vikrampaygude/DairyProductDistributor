@@ -45,4 +45,10 @@ public class ProductRestController {
     public ProductDTO getProduct(@PathVariable Long id){
         return productService.getById(id);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable Long id){
+        productService.deteletById(id);
+    }
+
 }

@@ -56,5 +56,8 @@ public class Product {
             orphanRemoval = true
     )
     private List<ProductWeightPrice> productWeightPriceList;
+
+    @Column
+    private Boolean deleted;
 }
 

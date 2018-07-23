@@ -2,14 +2,25 @@
   <div class="col col-md-4">
     <h2>Products</h2>
   </div>
-  <div class="col col-md-4  ">
-    <h2 class="pull-right">
-      <a class="btn btn-info" routerLink="/product/new" role="button">New Product</a>
-    </h2>
+</div>
+<div class="row">
+  <div class="col-md-8 float-left">
+      <!-- Distributor Area-->
+      <div class="row">
+        <div class="form-group col-md-4">
+            <select [(ngModel)]="searchBrandId" name="product_brandId" #product_brandId="ngModel" class="form-control form-control-sm" id="product_brandId">
+                <option value="0">All Brands</option>
+                <option *ngFor="let productBrand of productBrands" [ngValue]="productBrand.id">{{productBrand.name}}</option>
+            </select>
+        </div>     
+      </div>
+  </div>
+  <div class="col col-md-2 float-right  ">
+      <a class="btn btn-sm btn-info float-right" routerLink="/product/new" role="button">New Product</a>
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-10">
     <table class="table table-sm table-bordered ">
       <thead>
         <tr>
@@ -25,7 +36,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let product of products">
+        <tr *ngFor="let product of products | productByBrand:searchBrandId">
           <th scope="row" >{{product.id}}</th>
           <td>{{product.name}}</td>
           <td>{{product.shortName}}</td>
@@ -47,8 +58,9 @@
               </span>
           </td>
           <td>
-            <a class="btn btn-sm btn-primary" routerLink="/product/edit/{{product.id}}" role="button">edit</a>
-            <a class="btn btn-sm btn-primary" routerLink="/product/{{product.id}}/weight-price" role="button">view prices</a>
+            <a class="btn btn-sm btn-primary ml-1" routerLink="/product/edit/{{product.id}}" role="button">edit</a>
+            <a class="btn btn-sm btn-primary ml-1" routerLink="/product/{{product.id}}/weight-price" role="button">prices by weight</a>
+            <button type="button" class="btn btn-sm btn-danger ml1" (click)="delete(product)">delete</button>
           </td>
         </tr>
       </tbody>

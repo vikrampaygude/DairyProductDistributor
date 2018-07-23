@@ -27,6 +27,11 @@ export class ProductService {
    
   }
 
+  deleteById(id: number) {
+    return this.http.delete<Product>(this.url+"/"+id);
+  }
+
+
   getByDistributorAreaId(distributorAreaId: number): Observable<Product[]>{
     return this.http.get<Product[]>(this.url+"/distributorArea/"+distributorAreaId);
    

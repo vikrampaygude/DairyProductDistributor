@@ -27,6 +27,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { AuthInterceptor } from './auth/customhttpinterceptor';
 import { ErrorInterceptor } from './auth/error.interceptor';
+import { ProductByBrandFilterPipe } from './custom/pipes';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { ErrorInterceptor } from './auth/error.interceptor';
     CustomPriceComponent,
     CustomPriceDialogComponent,
     //order (home)
-    OrderComponent
+    OrderComponent,
+    ProductByBrandFilterPipe
 
   ],
   imports: [

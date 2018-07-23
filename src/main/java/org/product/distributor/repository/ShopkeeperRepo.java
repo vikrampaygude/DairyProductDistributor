@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface ShopkeeperRepo extends JpaRepository<Shopkeeper, Long> {
 
-    @Query("SELECT sp FROM Shopkeeper where sp.distributorArea.id = :distributorAreaId and (deleted is null || deleted = false)")
+    @Query("SELECT sp FROM Shopkeeper sp WHERE sp.distributorArea.id = :distributorAreaId and (sp.deleted is null OR sp.deleted = false)")
     List<Shopkeeper> findByDistributorArea_Id(@Param("distributorAreaId") Long distributorAreaId);
 
 }

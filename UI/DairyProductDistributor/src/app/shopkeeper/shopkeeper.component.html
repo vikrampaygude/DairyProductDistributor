@@ -4,7 +4,7 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-md-8 float-left">
+  <div class="col-md-6 float-left">
     <!-- Distributor Area-->
     <div class="row">
       <div class="form-group col-md-4">
@@ -45,6 +45,7 @@
           <td scope="col">{{shopkeeper.distributorName}}</td>
           <td scope="col">
             <a class="btn btn-sm btn-primary" routerLink="/shopkeeper/edit/{{shopkeeper.id}}" role="button">edit</a>
+            <button class="btn btn-sm btn-danger ml-2" (click)='delete(shopkeeper)' role="button">delete</button>
           </td>
         </tr>
       </tbody>

@@ -29,9 +29,6 @@
             <a  class="nav-link"  routerLink="orders">Dashboard</a>
         </li>
 
-        <li class="nav-item" >
-            <a  class="nav-link"  routerLink="distributors">Distributors</a>
-        </li>
         <li class="nav-item">
             <a class="nav-link" routerLink="distributor-areas">Distributor Areas</a>
         </li>
@@ -44,14 +41,16 @@
         <li class="nav-item">
             <a class="nav-link" routerLink="shopkeepers">Shopkeepers</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="custom-prices">Custom prices</a>
-        </li>
-        <li class="nav-item float-right" >
-          <button class="btn btn-sm btn-secondary"   (click)="logout()">Logout</button>
-        </li>
       </ul>
     </div>
+    <ul class="navbar-nav mr-auto float-right" >
+        <li class="nav-item active" *ngIf="isLoggedin() == false">
+            <button  class="btn btn-sm btn-primary"  routerLink="login">Login</button>
+        </li>
+        <li class="nav-item pl-2" *ngIf="isLoggedin() == true">
+            <button class="btn btn-sm btn-secondary"   (click)="logout()">Logout</button>
+        </li>
+    </ul>
 </nav>
 <div class="container-fluid wrapper">
   <router-outlet></router-outlet>

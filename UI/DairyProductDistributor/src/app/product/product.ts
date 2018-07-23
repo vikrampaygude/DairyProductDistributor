@@ -17,7 +17,7 @@ export class Product {
       ) {  }
   
       public static getEmptyObject(): Product{
-        return new Product(0,null,null,null,null,null,0,0,null,null)
+        return new Product(null,null,null,null,null,null,0,0,null,null)
       }
   
   }
