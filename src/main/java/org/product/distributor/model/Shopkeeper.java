@@ -21,6 +21,9 @@ public class Shopkeeper {
     private String name;
 
     @Column
+    private Boolean deleted;
+
+    @Column
     @Size(max = 256)
     private String address;
 

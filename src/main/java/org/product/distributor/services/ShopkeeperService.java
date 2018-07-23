@@ -43,8 +43,17 @@ public class ShopkeeperService {
 
     public List<ShopkeeperDTO> getAll(Long distributorAreaId){
         List<ShopkeeperDTO> shopkeeperDTOList = new ArrayList<>();
+
         shopkeeperRepo.findByDistributorArea_Id(distributorAreaId).forEach(d -> shopkeeperDTOList.add(shopkeeperMapper.getShopkeeperDTO(d)));
         return shopkeeperDTOList;
+    }
+
+    public void markDelete(Long id){
+        Optional<Shopkeeper> shopkeeperOptional = shopkeeperRepo.findById(id);
+        shopkeeperOptional.ifPresent(shopkeeper -> {
+            shopkeeper.setDeleted(true);
+            shopkeeperRepo.save(shopkeeper);
+        });
     }
 
 

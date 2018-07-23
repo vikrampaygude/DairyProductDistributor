@@ -192,7 +192,10 @@ export class OrderComponent implements OnInit {
    //temp function remvoe later
    setDefaultSearch(){
       this.ordersSearch.date = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
-      this.ordersSearch.distributorAreaId = 1;
+      
+      if(this.distributorAreas && this.distributorAreas[0])
+        this.ordersSearch.distributorAreaId = this.distributorAreas[0].id;
+      
       this.onSubmit();
    }
 

@@ -1,10 +1,25 @@
-<div class="row align-items-center">  
+<div class="row">  
   <div class="col col-md-4">
     <h2>shopkeepers</h2>
   </div>
-  <div class="col col-md-4  ">
-    <h2 class="pull-right">
-      <a class="btn btn-info" routerLink="/shopkeeper/new" role="button">New shopkeeper</a>
+</div>
+<div class="row">
+  <div class="col-md-8 float-left">
+    <!-- Distributor Area-->
+    <div class="row">
+      <div class="form-group col-md-4">
+         <select [(ngModel)]="searchDistAreaId" name="shopkeeper_searchDistAreaId" #shopkeeper_searchDistAreaId="ngModel" class="form-control form-control-sm" id="shopkeeper_searchDistAreaId">
+              <option *ngFor="let distributorArea of distributorAreas" [ngValue]="distributorArea.id">{{distributorArea.name}}</option>
+          </select>
+      </div>     
+      <div class="form-group  col-md-2">
+        <button (click)='search()' class="btn btn-sm btn-primary">search</button>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2 float-right">
+    <h2 class="float-right">
+      <a class="btn btn-sm btn-info" routerLink="/shopkeeper/new" role="button">New shopkeeper</a>
     </h2>
   </div>
 </div>

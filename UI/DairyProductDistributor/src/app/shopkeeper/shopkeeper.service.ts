@@ -16,14 +16,19 @@ export class ShopkeeperService {
 
   constructor(  private http: HttpClient) { }
 
-  getAllShopkeepers(): Observable<Shopkeeper[]> {
-    return this.http.get<Shopkeeper[]>(this.url+"/list");
+  getAllShopkeepers(distributorAreaId: number): Observable<Shopkeeper[]> {
+    return this.http.get<Shopkeeper[]>(this.url+"/list/"+distributorAreaId);
   }
 
   getById(id: number): Observable<Shopkeeper>{
     return this.http.get<Shopkeeper>(this.url+"/"+id);
    
   }
+
+  deleteById(id: number) {
+    return this.http.delete(this.url+"/"+id);  
+  }
+
 
   getAllShopkeepersByArea(distributorAreaId : number): Observable<Shopkeeper[]> {
     return this.http.get<Shopkeeper[]>(this.url+"/list-distributor-area/"+distributorAreaId);

@@ -30,10 +30,10 @@ public class ShopkeeperRestController {
         shopkeeperService.updateShopkeeper(shopkeeperDTO);
     }
 
-    @GetMapping("/list")
-    public List<ShopkeeperDTO> getShopkeepers(){
+    @GetMapping("/list/{distributorAreaId}")
+    public List<ShopkeeperDTO> getShopkeepers(@PathVariable Long distributorAreaId){
 
-        return shopkeeperService.getAll();
+        return shopkeeperService.getAll(distributorAreaId);
     }
 
     @GetMapping("/list-distributor-area/{distributorAreaId}")
@@ -47,4 +47,10 @@ public class ShopkeeperRestController {
 
         return shopkeeperService.getById(id);
     }
+
+    @DeleteMapping("/{id}")
+    public void markDeleted(@PathVariable Long id){
+        shopkeeperService.markDelete(id);
+    }
+
 }
