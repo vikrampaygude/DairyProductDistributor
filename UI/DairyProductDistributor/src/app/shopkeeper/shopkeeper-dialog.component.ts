@@ -13,7 +13,7 @@ import { DistributorAreaService } from '../distributor-area/distributor-area.ser
 export class ShopkeeperDialogComponent implements OnInit {
   distributorAreas : DistributorArea[];
 
-  model = new Shopkeeper(0,null,null,null,null,null,0);
+  model = new Shopkeeper(0,null,null,null,null,null,0,0);
 
   submitted = false;
 
