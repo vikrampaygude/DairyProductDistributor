@@ -230,7 +230,7 @@ public class OrderProductService {
             Predicate<OrderProduct> orderProductPredicate = order -> order.getShopkeeperOrder().getId().equals(shopkeeperOrder.getId());
 
             DailySellRowDataDTO dailySellRowDataDTO = dailySellRowDataMapper.getDailySellRowDataDTO(shopkeeperOrder
-                    , orderProductList.stream().parallel()
+                    , orderProductList.stream()
                             .filter(orderProductPredicate)
                             .collect(Collectors.toList())
             );
