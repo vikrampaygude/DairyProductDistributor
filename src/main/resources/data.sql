@@ -1,4 +1,4 @@
-insert into distributor values (1, 'Sai Dairy');
+insert into distributor values (1, 'Sidharth Milk Distributor');
 
 insert into distributor_area values (1, 'Sukhsagar nagar', 1);
 insert into distributor_area values (2, 'Bibwewadi', 1);

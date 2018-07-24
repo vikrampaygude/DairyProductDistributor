@@ -115,6 +115,8 @@ export class OrderComponent implements OnInit {
     this.customPrice.shopkeeperOrderId = shopkeeperOrder.id;
     this.customPrice.shopkeeperName = shopkeeperOrder.shopkeeperName;
     this.customPrice.price = order.sellingPrice;
+    this.customPrice.productWeightPriceId = order.productWeightPriceId;
+
     
 
     this.toggleCustomPrice = true;

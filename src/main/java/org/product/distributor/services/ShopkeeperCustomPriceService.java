@@ -4,6 +4,7 @@ import org.product.distributor.dto.ShopkeeperCustomPriceDTO;
 import org.product.distributor.mapper.ShopkeeperCustomPriceMapper;
 import org.product.distributor.model.Product;
 import org.product.distributor.model.ShopkeeperCustomPrice;
+import org.product.distributor.repository.ProductWeightPriceRepo;
 import org.product.distributor.repository.ShopkeeperCustomPriceRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +24,13 @@ public class ShopkeeperCustomPriceService {
     private ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo;
     private ShopkeeperCustomPriceMapper shopkeeperCustomPriceMapper;
     private OrderProductService orderProductService;
+    private ProductWeightPriceRepo productWeightPriceRepo;
 
-    public ShopkeeperCustomPriceService(ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo, ShopkeeperCustomPriceMapper shopkeeperCustomPriceMapper, OrderProductService orderProductService) {
+    public ShopkeeperCustomPriceService(ShopkeeperCustomPriceRepo shopkeeperCustomPriceRepo, ShopkeeperCustomPriceMapper shopkeeperCustomPriceMapper, OrderProductService orderProductService, ProductWeightPriceRepo productWeightPriceRepo) {
         this.shopkeeperCustomPriceRepo = shopkeeperCustomPriceRepo;
         this.shopkeeperCustomPriceMapper = shopkeeperCustomPriceMapper;
         this.orderProductService = orderProductService;
+        this.productWeightPriceRepo = productWeightPriceRepo;
     }
 
     public List<ShopkeeperCustomPriceDTO> getAll(){
@@ -37,11 +40,22 @@ public class ShopkeeperCustomPriceService {
     public ShopkeeperCustomPrice save(ShopkeeperCustomPriceDTO shopkeeperCustomPriceDTO) throws OperationNotSupportedException {
 
         //validation: only allow to add if not present already
-        if(shopkeeperCustomPriceRepo.findByShopkeeperOrderAndProduct( shopkeeperCustomPriceDTO.getProductId(), shopkeeperCustomPriceDTO.getShopkeeperOrderId()).isPresent())
-            throw new OperationNotSupportedException("Custom price already present for product weight. Please update instead of creating new one.");
+        if(shopkeeperCustomPriceDTO.getProductWeightPriceId() == null) {
+            if (shopkeeperCustomPriceRepo.findByShopkeeperOrderAndProduct(shopkeeperCustomPriceDTO.getProductId(),
+                    shopkeeperCustomPriceDTO.getShopkeeperOrderId()).isPresent())
+                throw new OperationNotSupportedException("Custom price already present for product weight. Please update instead of creating new one.");
+        }else if(shopkeeperCustomPriceRepo.findByShopkeeperOrderAndProductWeight(shopkeeperCustomPriceDTO.getProductId(),
+                shopkeeperCustomPriceDTO.getShopkeeperOrderId(), shopkeeperCustomPriceDTO.getProductWeightPriceId()).isPresent()){
+
+        }
 
 
         ShopkeeperCustomPrice shopkeeperCustomPrice = shopkeeperCustomPriceMapper.map(shopkeeperCustomPriceDTO);
+        if(shopkeeperCustomPrice.getProductWeightPrice()!=null && shopkeeperCustomPrice.getProductWeightPrice().getId()!=null)
+            shopkeeperCustomPrice.setProductWeightPrice(productWeightPriceRepo.findById(shopkeeperCustomPrice.getProductWeightPrice().getId()).get());
+        else
+            shopkeeperCustomPrice.setProductWeightPrice(null);
+
         shopkeeperCustomPrice = shopkeeperCustomPriceRepo.save(shopkeeperCustomPrice);
 
         updateProductOrderCustomPrice(shopkeeperCustomPriceDTO.getOrderProductId(), shopkeeperCustomPrice, shopkeeperCustomPriceDTO.getPrice());
@@ -55,6 +69,12 @@ public class ShopkeeperCustomPriceService {
 
 
         ShopkeeperCustomPrice shopkeeperCustomPrice = shopkeeperCustomPriceMapper.map(shopkeeperCustomPriceDTO);
+
+        if(shopkeeperCustomPrice.getProductWeightPrice()!=null && shopkeeperCustomPrice.getProductWeightPrice().getId()!=null)
+            shopkeeperCustomPrice.setProductWeightPrice(productWeightPriceRepo.findById(shopkeeperCustomPrice.getProductWeightPrice().getId()).get());
+        else
+            shopkeeperCustomPrice.setProductWeightPrice(null);
+
         shopkeeperCustomPrice = shopkeeperCustomPriceRepo.save(shopkeeperCustomPrice);
 
         updateProductOrderCustomPrice(shopkeeperCustomPriceDTO.getOrderProductId(), shopkeeperCustomPrice, shopkeeperCustomPriceDTO.getPrice());

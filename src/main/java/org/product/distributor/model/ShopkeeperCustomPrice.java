@@ -24,4 +24,7 @@ public class ShopkeeperCustomPrice {
     @Column
     private Double price;
 
+    @OneToOne
+    private ProductWeightPrice productWeightPrice;
+
 }

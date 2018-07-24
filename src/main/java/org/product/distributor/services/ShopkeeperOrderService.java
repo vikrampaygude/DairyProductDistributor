@@ -69,7 +69,6 @@ public class ShopkeeperOrderService {
         List<OrderProduct> orderProductList =  orderProductRepo.findByShopkeeperOrderId(id);
 
         Double total = 0.0;
-        Double due   = 0.0;
 
         //we need to calculate total bill, paid bill and due bill
         for(OrderProduct orderProduct : orderProductList){

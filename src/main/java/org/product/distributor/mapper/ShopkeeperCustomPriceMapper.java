@@ -20,14 +20,16 @@ public interface ShopkeeperCustomPriceMapper {
     @Mappings({
             @Mapping(source = "product.id", target = "productId"),
             @Mapping(source = "product.name", target = "productName"),
-            @Mapping(source = "shopkeeperOrder.id", target = "shopkeeperOrderId")
+            @Mapping(source = "shopkeeperOrder.id", target = "shopkeeperOrderId"),
+            @Mapping(source = "productWeightPrice.id", target = "productWeightPriceId")
 
     })
     ShopkeeperCustomPriceDTO map(ShopkeeperCustomPrice shopkeeperCustomPrice);
 
     @Mappings({
             @Mapping(target = "product.id", source = "productId"),
-            @Mapping(target = "shopkeeperOrder.id", source = "shopkeeperOrderId")
+            @Mapping(target = "shopkeeperOrder.id", source = "shopkeeperOrderId"),
+            @Mapping(target = "productWeightPrice.id", source = "productWeightPriceId")
     })
     ShopkeeperCustomPrice map(ShopkeeperCustomPriceDTO shopkeeperCustomPriceDTO);
 

@@ -44,10 +44,13 @@ public class ProductService {
         return productMapper.getProductDTO(productRepo.findById(id).get(), productRepo.findById(id).get().getProductWeightPriceList(), productRepo.findById(id).get().getDistributorAreaList());
     }
 
+    @Transactional
     public Product saveProduct(ProductDTO productDTO){
-        return productRepo.save(productMapper.getProduct(productDTO, productDTO.getProductWeightPriceDTOList(),productDTO.getDistributorAreaDTOList()));
+        Product product = productMapper.getProduct(productDTO, productDTO.getProductWeightPriceDTOList(), productDTO.getDistributorAreaDTOList());
+        return productRepo.save(product);
     }
 
+    @Transactional
     public Product updateProduct(ProductDTO productDTO){
         if(productDTO.getId() == null || productDTO.getId() ==0)
             throw new IllegalArgumentException();

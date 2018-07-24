@@ -46,4 +46,6 @@ public class ShopkeeperOrder {
     )
     private List<OrderProduct> orderProductList;
 
+    @Column
+    private Boolean deleted;
 }

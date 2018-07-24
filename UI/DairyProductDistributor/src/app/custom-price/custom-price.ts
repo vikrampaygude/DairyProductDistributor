@@ -9,6 +9,7 @@ export class CustomPrice {
   public productName: string;
   public areaId: number;
   public orderProductId: number;
+  public productWeightPriceId: number;
 
     constructor(
       ) {  }

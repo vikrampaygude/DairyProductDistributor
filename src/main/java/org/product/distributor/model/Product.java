@@ -42,7 +42,7 @@ public class Product {
     @Column
     private Double purchasePrice;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.MERGE,CascadeType.REFRESH })
     @JoinTable(
             name = "Distributor_Area_Product",
             joinColumns = { @JoinColumn(name = "product_id") },

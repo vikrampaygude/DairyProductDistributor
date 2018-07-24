@@ -17,5 +17,6 @@ public class ShopkeeperCustomPriceDTO {
     private String productName;
     private Long orderProductId;
     private Long shopkeeperOrderId;
+    private Long productWeightPriceId;
 
 }

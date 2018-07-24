@@ -16,23 +16,29 @@ import java.util.Optional;
  */
 public interface ShopkeeperOrderRepo extends JpaRepository<ShopkeeperOrder, Long> {
 
-    @Query("SELECT count(id) FROM ShopkeeperOrder so where so.date = :date and so.shopkeeper.id = :shopkeeperId")
+    @Query("SELECT count(id) FROM ShopkeeperOrder so where  ( so.deleted = false or so.deleted is null ) and  so.date = :date and so.shopkeeper.id = :shopkeeperId")
     Integer countByShopkeeperIdAndDate(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
-    @Query("SELECT count(id) FROM ShopkeeperOrder so where so.date = :date and so.distributorArea.id = :distributorAreaId")
+    @Query("SELECT count(id) FROM ShopkeeperOrder so where  ( so.deleted = false or so.deleted is null ) and  so.date = :date and so.distributorArea.id = :distributorAreaId")
     Integer countBydistributorAreaIdAndDate(@Param("date") LocalDate date, @Param("distributorAreaId") Long distributorAreaId);
 
 
-    @Query("SELECT so FROM ShopkeeperOrder so where so.date = :date and so.shopkeeper.id = :shopkeeperId")
+    @Query("SELECT so FROM ShopkeeperOrder so where  ( so.deleted = false or so.deleted is null ) and  so.date = :date and so.shopkeeper.id = :shopkeeperId")
     List<ShopkeeperOrder> findByShopkeeperIdAndDate(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
-    @Query("SELECT so FROM ShopkeeperOrder so where so.date = :date and so.shopkeeper.id = :shopkeeperId")
+    @Query("SELECT so FROM ShopkeeperOrder so where  ( so.deleted = false or so.deleted is null ) and so.date = :date and so.shopkeeper.id = :shopkeeperId")
     Optional<ShopkeeperOrder> findOneByShopkeeperIdAndDate(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
-    @Query("SELECT so FROM ShopkeeperOrder so where so.date = :date and so.distributorArea.id = :distributorAreaId")
+    @Query("SELECT so FROM ShopkeeperOrder so where ( so.deleted = false or so.deleted is null ) and so.date = :date and so.distributorArea.id = :distributorAreaId order by so.shopkeeper.name")
     List<ShopkeeperOrder> findActiveByDistributorAreaAndDate(@Param("date") LocalDate date,@Param("distributorAreaId") Long distributorAreaId);
 
-    @Query("SELECT so FROM ShopkeeperOrder so where so.date > :date and so.shopkeeper.id = :shopkeeperId and (so.dueAmount !=null and so.dueAmount > 0)")
+    @Modifying
+    @Transactional
+    @Query("UPDATE ShopkeeperOrder so SET so.deleted = true where so.date = :date and so.distributorArea.id = :distributorAreaId")
+    void deleteByDistributorAreaAndDate(@Param("date") LocalDate date,@Param("distributorAreaId") Long distributorAreaId);
+
+
+    @Query("SELECT so FROM ShopkeeperOrder so where  ( so.deleted = false or so.deleted is null ) and  so.date > :date and so.shopkeeper.id = :shopkeeperId and (so.dueAmount !=null and so.dueAmount > 0)")
     List<ShopkeeperOrder> findAllDues(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
 

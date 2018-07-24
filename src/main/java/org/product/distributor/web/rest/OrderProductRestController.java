@@ -38,7 +38,11 @@ public class OrderProductRestController {
 
     @PostMapping("/by-weight")
     public DailySellGridDataDTO saveOrderByWeight(@RequestBody OrderProductDTO orderProductDTO){
-        return orderProductService.saveOrderProductByWeight(orderProductDTO);
+
+        orderProductService.saveOrderProductByWeight(orderProductDTO);
+
+        return orderProductService.getGridData(orderProductDTO.getOrderId());
+
     }
 
     @PostMapping("/place-day-orders")
