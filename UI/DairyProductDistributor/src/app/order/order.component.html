@@ -154,7 +154,7 @@
         <tbody>
           <tr *ngFor="let shopkeeperOrder of orderGridData.dailySellRowDataDTOList">
               <td>{{shopkeeperOrder.shopkeeperOrderDTO.shopkeeperName}}
-                    <i class="fas fa-copy" (click)="copyYesterdayOrder(shopkeeperOrder.shopkeeperOrderDTO.id)" label="copy yesterday order"></i>
+                    <i class="fas fa-copy" (click)="copyYesterdayOrder(shopkeeperOrder.shopkeeperOrderDTO.id)" title="copy yesterday order"></i>
               </td>
                 <td *ngFor="let order of shopkeeperOrder.orderProductDTOS">
                   
