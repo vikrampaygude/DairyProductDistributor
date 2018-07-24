@@ -21,12 +21,14 @@ import java.util.stream.Collectors;
 
     public void processByWeight() {
         for (int i = 0; i < orderProductDTOS.size(); i++) {
-
+            OrderProductDTO orderProductDTO = orderProductDTOS.get(i);
+            if(orderProductDTO.getProductWeightPriceId() !=null)
+                continue;
             for (int j = i + 1; j < orderProductDTOS.size(); j++) {
-                if (orderProductDTOS.get(i).getProductId().equals(orderProductDTOS.get(j).getProductId())) {
-                    if (orderProductDTOS.get(i).getByWeightOrders() == null)
-                        orderProductDTOS.get(i).setByWeightOrders(new ArrayList<>());
-                    orderProductDTOS.get(i).getByWeightOrders().add(orderProductDTOS.get(j));
+                if (orderProductDTO.getProductId().equals(orderProductDTOS.get(j).getProductId())) {
+                    if (orderProductDTO.getByWeightOrders() == null)
+                        orderProductDTO.setByWeightOrders(new ArrayList<>());
+                    orderProductDTO.getByWeightOrders().add(orderProductDTOS.get(j));
                     orderProductDTOS.remove(j);
                     j--;
                 }
