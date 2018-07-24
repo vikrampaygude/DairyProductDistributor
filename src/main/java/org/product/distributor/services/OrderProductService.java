@@ -8,6 +8,7 @@ import org.product.distributor.dto.OrderProductDTO;
 import org.product.distributor.dto.search.OrderProductSearchDTO;
 import org.product.distributor.error.exception.InvalidDailyOrderCreateReqException;
 import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
+import org.product.distributor.error.exception.InvalidOperationException;
 import org.product.distributor.mapper.DailySellRowDataMapper;
 import org.product.distributor.mapper.OrderProductMapper;
 import org.product.distributor.model.*;
@@ -70,9 +71,15 @@ public class OrderProductService {
         return null;
     }
 
-    public void saveOrderProductByWeight(OrderProductDTO orderProductDTO){
+    public void saveOrderProductByWeight(OrderProductDTO orderProductDTO) throws InvalidOperationException {
 
         OrderProduct orderProduct = null;
+
+        Optional<ProductWeightPrice> productWeightPrice = productWeightPriceRepo.findById(orderProductDTO.getProductWeightPriceId());
+
+        if((productWeightPrice.get().getProduct().getId() != orderProductDTO.getProductId())){
+            throw new InvalidOperationException("Product id of weight price does not match order product id");
+        }
 
         //verify if by weight already present
         Optional<OrderProduct> orderProductOptional = orderProductRepo.findByWieght(orderProductDTO.getOrderId(), orderProductDTO.getProductId(), orderProductDTO.getProductWeightPriceId());
@@ -81,7 +88,6 @@ public class OrderProductService {
             orderProduct = orderProductOptional.get();
         else // create new one.
             orderProduct = orderProductMapper.mapWithoutCustomPrice(orderProductDTO);
-        Optional<ProductWeightPrice> productWeightPrice = productWeightPriceRepo.findById(orderProductDTO.getProductWeightPriceId());
         orderProduct.setSellingPrice(productWeightPrice.get().getSellingPrice());
         orderProduct.setQuantity(orderProductDTO.getQuantity());
         orderProduct.setProductWeightPrice(productWeightPrice.get());
@@ -229,11 +235,14 @@ public class OrderProductService {
         for (ShopkeeperOrder shopkeeperOrder : shopkeeperOrderList) {
             Predicate<OrderProduct> orderProductPredicate = order -> order.getShopkeeperOrder().getId().equals(shopkeeperOrder.getId());
 
+            List<OrderProduct> orderProducts = orderProductList.stream()
+                    .filter(orderProductPredicate)
+                    .collect(Collectors.toList());
+            loadWeightPrice(orderProducts);
+
+
             DailySellRowDataDTO dailySellRowDataDTO = dailySellRowDataMapper.getDailySellRowDataDTO(shopkeeperOrder
-                    , orderProductList.stream()
-                            .filter(orderProductPredicate)
-                            .collect(Collectors.toList())
-            );
+                    , orderProducts);
 
             Long shopkeeperId = shopkeeperOrder.getShopkeeper().getId();
 
@@ -271,6 +280,17 @@ public class OrderProductService {
             dailySellGridDataDTO.setHasFutureOrder(hasFutureOrder(date, distributorAreaId));
         }
         return dailySellGridDataDTO;
+    }
+
+    private void loadWeightPrice(List<OrderProduct> orderProducts) {
+        orderProducts.stream().parallel().forEach(orderProduct -> {
+            if(orderProduct.getProductWeightPrice()!=null) {
+                Long id = orderProduct.getProductWeightPrice().getId();
+                Optional<ProductWeightPrice> one = productWeightPriceRepo.findById(id);
+                orderProduct.setProductWeightPrice(one.get());
+            }
+
+        });
     }
 
 

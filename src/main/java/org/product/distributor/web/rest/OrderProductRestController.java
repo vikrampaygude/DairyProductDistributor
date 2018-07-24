@@ -6,6 +6,7 @@ import org.product.distributor.dto.ShopkeeperOrderDTO;
 import org.product.distributor.dto.search.OrderProductSearchDTO;
 import org.product.distributor.error.exception.InvalidDailyOrderCreateReqException;
 import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
+import org.product.distributor.error.exception.InvalidOperationException;
 import org.product.distributor.services.OrderProductService;
 import org.product.distributor.services.ShopkeeperOrderService;
 import org.springframework.web.bind.annotation.*;
@@ -32,12 +33,12 @@ public class OrderProductRestController {
     }
 
     @PostMapping
-    public void saveOrderProduct(@RequestBody OrderProductDTO orderProductDTO){
+    public void saveOrderProduct(@RequestBody OrderProductDTO orderProductDTO) throws InvalidOperationException {
         orderProductService.saveOrderProductByWeight(orderProductDTO);
     }
 
     @PostMapping("/by-weight")
-    public DailySellGridDataDTO saveOrderByWeight(@RequestBody OrderProductDTO orderProductDTO){
+    public DailySellGridDataDTO saveOrderByWeight(@RequestBody OrderProductDTO orderProductDTO) throws InvalidOperationException {
 
         orderProductService.saveOrderProductByWeight(orderProductDTO);
 

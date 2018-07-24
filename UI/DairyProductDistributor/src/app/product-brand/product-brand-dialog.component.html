@@ -12,7 +12,7 @@
       </div>
       <div class="form-group">
           <label for="shortName">Short name</label>
-          <input required type="text" [(ngModel)]="model.shortName" name="shortName" #shortName="ngModel" class="form-control" id="shortName" placeholder="Enter short name">        
+          <input type="text" [(ngModel)]="model.shortName" name="shortName" #shortName="ngModel" class="form-control" id="shortName" placeholder="Enter short name">        
         </div>          
       <button type="submit" class="btn btn-primary"
       [disabled]="!productBrandForm.form.valid">save</button>

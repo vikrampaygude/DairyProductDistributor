@@ -117,8 +117,6 @@ export class OrderComponent implements OnInit {
     this.customPrice.price = order.sellingPrice;
     this.customPrice.productWeightPriceId = order.productWeightPriceId;
 
-    
-
     this.toggleCustomPrice = true;
   }
 
@@ -173,6 +171,7 @@ export class OrderComponent implements OnInit {
     this.toggleAddByWeight = !this.toggleAddByWeight;
     this.service.saveNewOrder(this.newOrder).subscribe(gridData =>{
       this.orderGridData = gridData;
+      this.newOrder = new NewOrder();
     });
   }
   // TODO: Remove this when we're done

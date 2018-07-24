@@ -53,15 +53,13 @@
           <label for="distributorAreaList">Distributor Area List:</label>
           <div *ngFor="let distributorArea of distributorAreaCheckList">
               <label>
-                  <input type="checkbox"
+                  <input type="checkbox" checked
                          name="{{distributorArea.name}}"
                          [(ngModel)]="distributorArea.checked"/>
                   {{distributorArea.name}}
               </label>
           </div>
       </div>
-
-
       <button type="submit" class="btn btn-primary"
       [disabled]="!productForm.form.valid">save</button>
     </form>
