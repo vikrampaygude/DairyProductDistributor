@@ -24,7 +24,7 @@
     <table class="table table-sm table-bordered ">
       <thead>
         <tr>
-          <th scope="col">#Id</th>
+          <th scope="col">Sequence</th>
           <th scope="col">Name</th>
           <th scope="col">Short name</th>
           <th scope="col">Product brand</th>
@@ -37,7 +37,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let product of products | productByBrand:searchBrandId">
-          <th scope="row" >{{product.id}}</th>
+          <th scope="row" >{{product.uiSequence}}</th>
           <td>{{product.name}}</td>
           <td>{{product.shortName}}</td>
           <td>{{product.brandName}}</td>

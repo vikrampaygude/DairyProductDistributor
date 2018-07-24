@@ -2,6 +2,11 @@
   <div class="col col-md-4">
     <h2>New Shopkeeper</h2>
     <form (ngSubmit)="onSubmit()" #shopkeeperForm="ngForm">
+      <!--  Sequence -->
+      <div class="form-group">
+          <label for="uiSequence">Sequence:</label>
+          <input type="number" [(ngModel)]="model.uiSequence" name="uiSequence" #uiSequence="ngModel" class="form-control" id="uiSequence" placeholder="Enter sequence">        
+      </div>        
       <!-- Shopkeeper Name -->
       <div class="form-group">
         <label for="name">Name</label>
@@ -22,7 +27,7 @@
           <select [(ngModel)]="model.distributorAreaId" name="distributorAreaId" #distributorAreaId="ngModel" class="form-control" id="distributorAreaId">
               <option *ngFor="let distributorArea of distributorAreas" [ngValue]="distributorArea.id">{{distributorArea.name}}</option>
           </select>
-      </div>     
+      </div>
       <button type="submit" class="btn btn-primary"
       [disabled]="!shopkeeperForm.form.valid">save</button>
     </form>

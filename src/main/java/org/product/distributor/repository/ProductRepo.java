@@ -15,9 +15,9 @@ import java.util.List;
 @Repository
 public interface ProductRepo extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p FROM Product p inner join p.distributorAreaList da where  da.id = :distributorAreaId and (p.deleted is null  or p.deleted = false  ) order by p.id")
+    @Query("SELECT p FROM Product p inner join p.distributorAreaList da where  da.id = :distributorAreaId and (p.deleted is null  or p.deleted = false  ) order by p.uiSequence, p.id")
     List<Product> findByDistributorAreaList_Id(@Param("distributorAreaId") Long distributorAreaId);
 
-    @Query("SELECT p FROM Product p where p.deleted is null  or p.deleted = false  ")
+    @Query("SELECT p FROM Product p where p.deleted is null  or p.deleted = false  order by p.uiSequence, p.id ")
     List<Product> findAll();
 }

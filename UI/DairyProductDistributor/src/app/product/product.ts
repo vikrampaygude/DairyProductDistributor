@@ -13,11 +13,12 @@ export class Product {
         public sellingPrice : number ,
         public purchasePrice : number,
         public ProductWeightPriceList: ProductWeightPrice[],
-        public distributorAreaDTOList: DistributorArea[]
+        public distributorAreaDTOList: DistributorArea[],
+        public uiSequence: number
       ) {  }
   
       public static getEmptyObject(): Product{
-        return new Product(null,null,null,null,null,null,0,0,null,null)
+        return new Product(null,null,null,null,null,null,0,0,null,null,0);
       }
   
   }

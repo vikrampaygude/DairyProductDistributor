@@ -29,7 +29,7 @@ public interface ShopkeeperOrderRepo extends JpaRepository<ShopkeeperOrder, Long
     @Query("SELECT so FROM ShopkeeperOrder so where  ( so.deleted = false or so.deleted is null ) and so.date = :date and so.shopkeeper.id = :shopkeeperId")
     Optional<ShopkeeperOrder> findOneByShopkeeperIdAndDate(@Param("date") LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
-    @Query("SELECT so FROM ShopkeeperOrder so where ( so.deleted = false or so.deleted is null ) and so.date = :date and so.distributorArea.id = :distributorAreaId order by so.shopkeeper.name")
+    @Query("SELECT so FROM ShopkeeperOrder so where ( so.deleted = false or so.deleted is null ) and so.date = :date and so.distributorArea.id = :distributorAreaId order by so.shopkeeper.uiSequence, so.shopkeeper.id")
     List<ShopkeeperOrder> findActiveByDistributorAreaAndDate(@Param("date") LocalDate date,@Param("distributorAreaId") Long distributorAreaId);
 
     @Modifying

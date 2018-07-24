@@ -2,6 +2,10 @@
   <div class="col col-md-4">
     <h2>New Product</h2>
     <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+      <div class="form-group">
+            <label for="uiSequence">Sequence:</label>
+            <input type="number" [(ngModel)]="model.uiSequence" name="uiSequence" #uiSequence="ngModel" class="form-control" id="uiSequence" placeholder="Enter sequence">        
+      </div>
       <!-- Product Name -->
       <div class="form-group">
         <label for="name">Name</label>
@@ -40,26 +44,14 @@
             Purchase Price is required
             </div>
       </div>
-      <!-- Unit of measure -->
       <div class="form-group">
-          <label for="unitOfMeasure">Unit of measure</label>
-          <input required type="text" [(ngModel)]="model.unitOfMeasure" name="unitOfMeasure" #unitOfMeasure="ngModel" class="form-control" id="purchasePrice" placeholder="Enter Purchase Price">        
-            <div [hidden]="unitOfMeasure.valid || unitOfMeasure.pristine"
-            class="alert alert-danger">
-            Unit Of Measure Price is required
-            </div>
-      </div>
-      <div class="form-group">
-          <label for="distributorAreaList">Distributor Area List:</label>
-          <div *ngFor="let distributorArea of distributorAreaCheckList">
-              <label>
-                  <input type="checkbox" checked
-                         name="{{distributorArea.name}}"
-                         [(ngModel)]="distributorArea.checked"/>
-                  {{distributorArea.name}}
-              </label>
-          </div>
-      </div>
+            <label for="unitOfMeasure">Unit of measure</label>
+            <input required type="text" [(ngModel)]="model.unitOfMeasure" name="unitOfMeasure" #unitOfMeasure="ngModel" class="form-control" id="purchasePrice" placeholder="Enter Purchase Price">        
+              <div [hidden]="unitOfMeasure.valid || unitOfMeasure.pristine"
+              class="alert alert-danger">
+              Unit Of Measure Price is required
+              </div>
+      </div>  
       <button type="submit" class="btn btn-primary"
       [disabled]="!productForm.form.valid">save</button>
     </form>

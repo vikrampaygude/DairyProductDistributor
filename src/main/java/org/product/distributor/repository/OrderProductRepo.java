@@ -18,7 +18,7 @@ public interface OrderProductRepo extends JpaRepository<OrderProduct, Long> {
     @Query("SELECT op FROM OrderProduct op where op.shopkeeperOrder.id = :shopkeeperOrderId")
     List<OrderProduct> findByShopkeeperOrderId(@Param("shopkeeperOrderId") Long shopkeeperOrderId);
 
-    @Query("SELECT op FROM OrderProduct op where op.shopkeeperOrder.id in :shopkeeperOrderList order by op.product.id ")
+    @Query("SELECT op FROM OrderProduct op where op.shopkeeperOrder.id in :shopkeeperOrderList order by op.product.uiSequence, op.product.id ")
     List<OrderProduct> findByShopkeeperOrderIds(@Param("shopkeeperOrderList") List<Long> shopkeeperOrderList);
 
     @Query("SELECT op FROM OrderProduct op where op.shopkeeperOrder.id = :shopkeeperOrderId and op.product.id =:productId and op.productWeightPrice.id =:weightId ")

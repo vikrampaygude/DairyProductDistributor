@@ -7,7 +7,8 @@ export class Shopkeeper {
         public distributorAreaName: string ,
         public distributorAreaId: number ,
         public distributorName: string ,
-        public distributorId: number 
+        public distributorId: number,
+        public uiSequence: number
           ) {  }
   
   }

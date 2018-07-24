@@ -37,7 +37,7 @@ public class ShopkeeperService {
 
     public List<ShopkeeperDTO> getAll(){
         List<ShopkeeperDTO> shopkeeperDTOList = new ArrayList<>();
-        shopkeeperRepo.findAll().forEach(d -> shopkeeperDTOList.add(shopkeeperMapper.getShopkeeperDTO(d)));
+        shopkeeperRepo.findAllByOrderByUiSequenceAsc().forEach(d -> shopkeeperDTOList.add(shopkeeperMapper.getShopkeeperDTO(d)));
         return shopkeeperDTOList;
     }
 

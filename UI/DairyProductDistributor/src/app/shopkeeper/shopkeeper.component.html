@@ -28,17 +28,17 @@
     <table class="table table-sm table-bordered ">
       <thead>
         <tr>
-          <th scope="col">#Id</th>
+          <th scope="col">Sequence</th>
           <th scope="col">Name</th>
           <th scope="col">Address</th>
           <th scope="col"> Area Name</th>
-          <th scope="col"> Distributor Name</th>
+          <th scope="col"> Distributor Name</th>          
           <th scope="col">Options</th>
         </tr>
       </thead>
       <tbody>
         <tr scope="row" *ngFor="let shopkeeper of shopkeepers">
-          <td scope="col"  >{{shopkeeper.id}}</td>
+          <td scope="col"  >{{shopkeeper.uiSequence}}</td>
           <td scope="col">{{shopkeeper.name}}</td>
           <td scope="col">{{shopkeeper.address}}</td>
           <td scope="col">{{shopkeeper.distributorAreaName}}</td>

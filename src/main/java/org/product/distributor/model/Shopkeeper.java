@@ -27,6 +27,9 @@ public class Shopkeeper {
     @Size(max = 256)
     private String address;
 
+    @Column
+    private Integer uiSequence;
+
     @OneToOne
     private DistributorArea distributorArea;
 

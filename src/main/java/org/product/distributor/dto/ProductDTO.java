@@ -19,6 +19,7 @@ public class ProductDTO {
     private Double sellingPrice;
     private Double purchasePrice;
     private String unitOfMeasure;
+    private Integer uiSequence;
 
     private List<ProductWeightPriceDTO> productWeightPriceDTOList;
     private List<DistributorAreaDTO> distributorAreaDTOList;

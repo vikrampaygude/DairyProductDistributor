@@ -42,6 +42,9 @@ public class Product {
     @Column
     private Double purchasePrice;
 
+    @Column
+    private Integer uiSequence;
+
     @ManyToMany(cascade = { CascadeType.MERGE,CascadeType.REFRESH })
     @JoinTable(
             name = "Distributor_Area_Product",

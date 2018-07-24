@@ -14,7 +14,7 @@ export class ShopkeeperComponent implements OnInit {
   shopkeepers : Shopkeeper[];
   distributorAreas : DistributorArea[];
 
-  model = new Shopkeeper(0,null,null,null,null,null,0);
+  model = new Shopkeeper(0,null,null,null,null,null,0,0);
 
   submitted = false;
   public searchDistAreaId: any = 0;
@@ -48,7 +48,7 @@ export class ShopkeeperComponent implements OnInit {
   }
 
   newShopkeeper(){
-    this.model = new Shopkeeper(0,null,null,null,null,null,0);
+    this.model = new Shopkeeper(0,null,null,null,null,null,0,0);
   }
 
   ngOnInit() {

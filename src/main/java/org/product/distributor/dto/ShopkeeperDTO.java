@@ -18,6 +18,7 @@ public class ShopkeeperDTO {
     private Long distributorAreaId;
     private String distributorName;
     private Long distributorId;
+    private Integer uiSequence;
 
 
 }
