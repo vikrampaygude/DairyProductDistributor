@@ -3,7 +3,7 @@ cd UI/DairyProductDistributor
 ng build --prod
 cd ../../
 
+mvn clean install
 git add .
 git commit -m 'deploy changes'
-mvn clean install
 git push heroku master
