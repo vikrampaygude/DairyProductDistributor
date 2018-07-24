@@ -39,4 +39,6 @@ public interface ProductMapper {
     })
     Product getProduct(ProductDTO productDTO, List<ProductWeightPriceDTO> productWeightPriceDTOList, List<DistributorAreaDTO> distributorAreaDTOList);
 
+    List<ProductDTO> map(List<Product> products);
+
 }

@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
             OrderProductDTO orderProductDTO = orderProductDTOS.get(i);
             if(orderProductDTO.getProductWeightPriceId() !=null)
                 continue;
-            for (int j = i + 1; j < orderProductDTOS.size(); j++) {
-                if (orderProductDTO.getProductId().equals(orderProductDTOS.get(j).getProductId())) {
+            for (int j = 0; j < orderProductDTOS.size(); j++) {
+                if ( orderProductDTO!= orderProductDTOS.get(j) && orderProductDTO.getProductId().equals(orderProductDTOS.get(j).getProductId())) {
                     if (orderProductDTO.getByWeightOrders() == null)
                         orderProductDTO.setByWeightOrders(new ArrayList<>());
                     orderProductDTO.getByWeightOrders().add(orderProductDTOS.get(j));

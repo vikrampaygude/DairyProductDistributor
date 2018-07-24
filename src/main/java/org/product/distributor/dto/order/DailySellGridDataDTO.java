@@ -2,6 +2,7 @@ package org.product.distributor.dto.order;
 
 import lombok.Data;
 import org.product.distributor.dto.OrderProductDTO;
+import org.product.distributor.dto.ProductDTO;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -13,6 +14,7 @@ import java.util.*;
 public class DailySellGridDataDTO {
 
     private LocalDate date;
+    private List<ProductDTO> productDTOS;
     private List<DailySellRowDataDTO> dailySellRowDataDTOList;
     private List<DailySellGridTotalDTO> dailySellGridTotalDTOS = new ArrayList<>();
     private Double grandTotalAmount;

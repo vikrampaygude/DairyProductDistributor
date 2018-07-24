@@ -11,6 +11,7 @@ import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
 import org.product.distributor.error.exception.InvalidOperationException;
 import org.product.distributor.mapper.DailySellRowDataMapper;
 import org.product.distributor.mapper.OrderProductMapper;
+import org.product.distributor.mapper.ProductMapper;
 import org.product.distributor.model.*;
 import org.product.distributor.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class OrderProductService {
 
     @Autowired
     private ShopkeeperBillService shopkeeperBillService;
+
+    @Autowired
+    private ProductMapper productMapper;
 
     public OrderProductService(OrderProductRepo orderProductRepo, OrderProductMapper orderProductMapper, ProductRepo productRepo, ShopkeeperRepo shopkeeperRepo, ShopkeeperOrderRepo shopkeeperOrderRepo, DailySellRowDataMapper dailySellRowDataMapper, ShopkeeperOrderService shopkeeperOrderService) {
         this.orderProductRepo = orderProductRepo;
@@ -278,6 +282,8 @@ public class OrderProductService {
             dailySellGridDataDTO.setGrandTotalDueAmount(grandTotalDueAmount);
 
             dailySellGridDataDTO.setHasFutureOrder(hasFutureOrder(date, distributorAreaId));
+
+            dailySellGridDataDTO.setProductDTOS(productMapper.map(productRepo.findByDistributorAreaList_Id(distributorAreaId)));
         }
         return dailySellGridDataDTO;
     }
@@ -288,7 +294,6 @@ public class OrderProductService {
                 Long id = orderProduct.getProductWeightPrice().getId();
                 Optional<ProductWeightPrice> one = productWeightPriceRepo.findById(id);
                 orderProduct.setProductWeightPrice(one.get());
-                System.out.println(" ===========+> "+orderProduct.getProductWeightPrice().getWeight());
             }
 
         });
