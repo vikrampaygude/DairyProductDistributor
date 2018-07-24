@@ -52,7 +52,7 @@ export class ShopkeeperService {
      * Convert a returned JSON object to Campaign.
      */
     private convertItemFromServer(json: any): Shopkeeper {
-      const entity: Shopkeeper = Object.assign(new Shopkeeper(0,null,null,null,null,null,0), json);
+      const entity: Shopkeeper = Object.assign(new Shopkeeper(0,null,null,null,null,null,0,0), json);
       return entity;
     }
 
