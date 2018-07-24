@@ -288,6 +288,7 @@ public class OrderProductService {
                 Long id = orderProduct.getProductWeightPrice().getId();
                 Optional<ProductWeightPrice> one = productWeightPriceRepo.findById(id);
                 orderProduct.setProductWeightPrice(one.get());
+                System.out.println(" ===========+> "+orderProduct.getProductWeightPrice().getWeight());
             }
 
         });
