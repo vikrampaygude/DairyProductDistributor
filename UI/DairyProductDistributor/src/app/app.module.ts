@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule }   from '@angular/forms';
 import { HttpModule } from '@angular/http';
-
+import { ErrorHandler} from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { DistributorComponent } from './distributor/distributor.component';
@@ -28,6 +28,9 @@ import { LoginComponent } from './login/login.component';
 import { AuthInterceptor } from './auth/customhttpinterceptor';
 import { ErrorInterceptor } from './auth/error.interceptor';
 import { ProductByBrandFilterPipe } from './custom/pipes';
+import { ErrorsHandler } from './notification/errors/errors-handler';
+import { ErrorsComponent } from './notification/errors/errors.component';
+
 
 @NgModule({
   declarations: [
@@ -58,8 +61,9 @@ import { ProductByBrandFilterPipe } from './custom/pipes';
     CustomPriceDialogComponent,
     //order (home)
     OrderComponent,
-    ProductByBrandFilterPipe
-
+    ProductByBrandFilterPipe,
+    //global error componenet
+    ErrorsComponent
   ],
   imports: [
     BrowserModule,
@@ -71,6 +75,7 @@ import { ProductByBrandFilterPipe } from './custom/pipes';
   providers: [
     {provide: HTTP_INTERCEPTORS,useClass: AuthInterceptor,multi: true},
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {provide: ErrorHandler, useClass: ErrorsHandler}
   ],
   bootstrap: [AppComponent]
 })

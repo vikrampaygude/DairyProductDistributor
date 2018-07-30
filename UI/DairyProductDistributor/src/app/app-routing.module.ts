@@ -17,6 +17,7 @@ import { CustomPriceComponent } from './custom-price/custom-price.component';
 import { CustomPriceDialogComponent } from './custom-price/custom-price-dialog.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { ErrorsComponent } from './notification/errors/errors.component';
 
 
 const routes: Routes = [
@@ -54,7 +55,8 @@ const routes: Routes = [
   { path: 'custom-price/edit/:id', component: CustomPriceDialogComponent},
 
   //order (Home page)
-  {path:'orders', component: OrderComponent}
+  {path:'orders', component: OrderComponent},
+  { path: 'error', component: ErrorsComponent }
   
 ];
 

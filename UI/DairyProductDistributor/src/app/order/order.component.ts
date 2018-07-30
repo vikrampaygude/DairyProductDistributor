@@ -16,6 +16,7 @@ import { ProductWeightPrice } from '../product-weight-price/product-weight-price
 import { ProductWeightPriceService } from '../product-weight-price/product-weight-price.service';
 import { CustomPrice } from '../custom-price/custom-price';
 import { CustomPriceService } from '../custom-price/custom-price.service';
+import { NotificationService } from '../notification/notification.service';
 
 
 @Component({
@@ -42,16 +43,17 @@ export class OrderComponent implements OnInit {
   toggleAddByWeight : boolean = false;
   toggleCustomPrice : boolean = false;
   customPrice : CustomPrice;
-  
+  loading : boolean = false;
 
   onSubmit() { 
-    this.searched = true;
-    console.log("On submit "+this.searched);
+    this.loading = true;
     this.service.getDayOrders(this.ordersSearch).subscribe(data => {
         //this.orderGridData= new OrderGridData();
         this.orderGridData = data;
         console.log(this.orderGridData)
         Object.assign(this.orderPrintGridData, this.orderGridData);
+        this.loading = false;
+        this.searched = true;
       });
        this.setShopkeepers();
        this.setProducts();
@@ -63,6 +65,8 @@ export class OrderComponent implements OnInit {
     this.service.createEmptyDailyOrder(this.ordersSearch).subscribe(obj => {
       console.log(obj);
       this.onSubmit();
+      this.notificationService.notifySuccess("Todays order created successfully !");
+
     });
   }
 
@@ -83,6 +87,8 @@ export class OrderComponent implements OnInit {
       this.service.deleteDayOrder(this.ordersSearch).subscribe(obj => {
         console.log(obj);
         this.onSubmit();
+        this.notificationService.notifySuccess("Order deleted successfully !");
+
       });
     }
   }
@@ -90,6 +96,7 @@ export class OrderComponent implements OnInit {
   createOrderAsYesterday(){
     this.service.createOrderAsYesterday(this.ordersSearch).subscribe(obj => {
       this.onSubmit();
+      this.notificationService.notifySuccess("Order created as per yesterday !");
     });
   }
 
@@ -101,7 +108,10 @@ export class OrderComponent implements OnInit {
 
   customPriceFormOnSubmit(){
     console.log(this.customPrice);
-    this.customPriceService.save(this.customPrice).subscribe(data => this.orderGridData = data);
+    this.customPriceService.save(this.customPrice).subscribe(data => {
+      this.orderGridData = data
+      this.notificationService.notifySuccess("Custom price applied !");
+    });
     this.toggleCustomPrice = !this.toggleCustomPrice;
   }
 
@@ -128,9 +138,11 @@ export class OrderComponent implements OnInit {
   }
 
   applyLatestPrices(){
+    this.loading = true;
     this.service.applyLatestPrices(this.ordersSearch).subscribe(
       data => {
         this.onSubmit();
+        this.loading = true;
       });
   }
 
@@ -172,6 +184,7 @@ export class OrderComponent implements OnInit {
     this.service.saveNewOrder(this.newOrder).subscribe(gridData =>{
       this.orderGridData = gridData;
       this.newOrder = new NewOrder();
+      this.notificationService.notifySuccess("Order added successfully !");
     });
   }
   // TODO: Remove this when we're done
@@ -182,7 +195,8 @@ export class OrderComponent implements OnInit {
     , public productService: ProductService
     , public shopkeeperService: ShopkeeperService
     , public productWeightPriceService: ProductWeightPriceService
-    , public customPriceService : CustomPriceService) {
+    , public customPriceService : CustomPriceService
+    , public notificationService: NotificationService) {
 
     this.distributorAreaService.getAllDistributorAreas().subscribe(areas => {
       this.distributorAreas = areas;

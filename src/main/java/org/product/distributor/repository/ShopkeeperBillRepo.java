@@ -18,11 +18,11 @@ import java.util.Optional;
 @Repository
 public interface ShopkeeperBillRepo extends JpaRepository<ShopkeeperBill, Long> {
 
-    @Query("SELECT sb FROM ShopkeeperBill sb WHERE sb.date = :date and sb.shopkeeper.id = :shopkeeperId")
+    @Query("SELECT sb FROM ShopkeeperBill sb WHERE sb.date = :date and sb.shopkeeper.id = :shopkeeperId and (sb.deleted is null or sb.deleted = false)")
     Optional<ShopkeeperBill> findByDateAndShopkeeper(@Param("date")LocalDate date, @Param("shopkeeperId") Long shopkeeperId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM ShopkeeperBill sb WHERE sb.date = :date and sb.shopkeeper.id = :shopkeeperId")
-    void delete(@Param("date") LocalDate date,@Param("shopkeeperId") Long shopkeeperId);
+    @Query("UPDATE ShopkeeperBill sb SET sb.deleted = true WHERE sb.date = :date")
+    void deleteByDate(@Param("date") LocalDate date);
 }

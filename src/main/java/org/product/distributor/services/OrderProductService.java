@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -390,7 +392,10 @@ public class OrderProductService {
     /**
      * Thiw will create by yesterday
      */
-    public void createDailyOrderAsYesterday(LocalDate date, Long distributorAreaId) throws OperationNotSupportedException {
+    public void createDailyOrderAsYesterday(LocalDate date, Long distributorAreaId) throws OperationNotSupportedException, InvalidDailyOrderCreateReqException {
+
+        if(isValidCreateRequest(date) == false)
+            throw new InvalidDailyOrderCreateReqException("Not allowed to create order on date "+date.toString() +" wait until day before to create this order.");
 
         LocalDate yesterdaysDate = date.minusDays(1);// make it yesterday
 
@@ -401,11 +406,13 @@ public class OrderProductService {
 
         shopkeeperOrderList.forEach(so -> {
             List<OrderProduct> orderProductList = orderProductRepo.findByShopkeeperOrderId(so.getId());
-            copyNewOrderByShopkeeper(so, orderProductList, date);// for todays date
+            ShopkeeperOrder newSo = copyNewOrderByShopkeeper(so, orderProductList, date);// for todays date
+            shopkeeperOrderService.calculateAndSaveOrderBill(newSo.getId()); //calculate due and bill details
         });
+
     }
 
-    public void copyNewOrderByShopkeeper(ShopkeeperOrder so, List<OrderProduct> orderProductList, LocalDate date){
+    public ShopkeeperOrder copyNewOrderByShopkeeper(ShopkeeperOrder so, List<OrderProduct> orderProductList, LocalDate date){
         //first create copy of so
 
         ShopkeeperOrder newSo = saveCopyOfShopkeeperOrder(so, date);
@@ -417,6 +424,7 @@ public class OrderProductService {
         });
         orderProductRepo.saveAll(newOrderProductList);
 
+        return newSo;
     }
 
     private OrderProduct saveCopyOfOrderProduct(OrderProduct op, ShopkeeperOrder so) {
@@ -477,7 +485,11 @@ public class OrderProductService {
             throw new InvalidDailyOrderDeleteException("Day order can't be deleted as future order present and depend on this order for due calculation.");
         }
 
+        //all soft deletesƒ
         shopkeeperOrderRepo.deleteByDistributorAreaAndDate(date, distributorAreaId);
+        shopkeeperBillService.deleteByDate(date);
+
+        List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorAreaId);
 
         /*List<ShopkeeperOrder> shopkeeperOrderList= shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(date, distributorAreaId);
 
@@ -498,8 +510,9 @@ public class OrderProductService {
     public Boolean isValidCreateRequest(LocalDate localDate){
 
         LocalDate today = LocalDate.now();
-        if(localDate.compareTo(today) < 2)
+        if(today.until(localDate, ChronoUnit.DAYS) < 2) {
             return true;
+        }
         return false;
     }
 }

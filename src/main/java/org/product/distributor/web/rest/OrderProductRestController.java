@@ -69,7 +69,7 @@ public class OrderProductRestController {
     }
 
     @PostMapping("/create-yesterday-copy")
-    public void createOrderAsYesterday(@RequestBody OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException {
+    public void createOrderAsYesterday(@RequestBody OrderProductSearchDTO orderProductSearchDTO) throws OperationNotSupportedException, InvalidDailyOrderCreateReqException {
         orderProductService.createDailyOrderAsYesterday(orderProductSearchDTO.getLocalDate(), orderProductSearchDTO.getDistributorAreaId());
     }
 

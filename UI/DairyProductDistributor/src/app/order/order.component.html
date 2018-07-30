@@ -23,6 +23,10 @@
         <button type="submit" class="btn btn-sm btn-primary" style="margin-top:25px"
         [disabled]="!ordersSearchForm.form.valid">search</button>
     </div>
+    <div class="col-md-6" *ngIf="loading == true" align="center">
+        <i class="fas fa-spinner fa-spin fa-2x fa-fw mt-4
+       float-right" align="center"></i>
+    </div>
   </div>
 </form>
 <div class="row">
@@ -30,26 +34,26 @@
   <div class="col-md-8 float-left pb-2">
   <form (ngSubmit)="newOrderFormOnSubmit()" class="form-row" #newOrderForm="ngForm" *ngIf="toggleAddByWeight == true" >
       <div class="col-md-2">
-        <label>Shopkeeper</label>
+        <label>Shopkeeper *</label>
         <select required [(ngModel)]="newOrder.shopkeeperId" name="shopkeeperId" #shopkeeperId="ngModel" class="form-control form-control-sm" id="shopkeeperId">
             <option *ngFor="let shopkeeper of shopkeepers" [ngValue]="shopkeeper.id">{{shopkeeper.name}}</option>
         </select>
      </div>
       <div class="col-md-2">
-          <label for="name">Product</label>
+          <label for="name">Product *</label>
           <select required [(ngModel)]="newOrder.productId" (change) = "setProductWeightPrices()" name="productId" #productId="ngModel" class="form-control form-control-sm" id="productId">
-              <option *ngFor="let product of products" [ngValue]="product.id">{{product.name}}</option>
+              <option *ngFor="let product of products" [ngValue]="product.id">{{product.shortName}}</option>
           </select>
       </div>
       <div class="col-md-2">
-          <label for="name">Weight</label>
+          <label for="name">Weight *</label>
           <select required [(ngModel)]="newOrder.productWeightPriceId" name="productWeightPriceId" #productWeightPriceId="ngModel" class="form-control form-control-sm" id="productWeightPriceId">
               <option *ngFor="let qPrice of productWeightPrices" [ngValue]="qPrice.id">{{qPrice.weight}} - {{qPrice.sellingPrice}}</option>
           </select>
       </div>
       <div class="col-md-2">
-          <label for="name">Quantity</label>
-          <input required type="number" [(ngModel)]="newOrder.quantity" name="quantity" class="form-control-sm form-control" id="quantity" placeholder="Enter weight">
+          <label for="name">Quantity *</label>
+          <input required type="number" [(ngModel)]="newOrder.quantity" name="quantity" class="form-control-sm form-control" id="quantity" >
       </div>
       <div class="col-md-2 ">
           <label> Operation</label>
@@ -126,7 +130,7 @@
   </div>
     
 </div>
-<div class="row" *ngIf="searched && orderGridData == null">
+<div class="row" *ngIf="searched ==true && orderGridData == null ">
   <div class="col-md-12">
       <span>
         Order not present on date {{ordersSearch.date}}. Click 
@@ -136,7 +140,7 @@
       </span>
   </div>
 </div>
-<div class="row" *ngIf="searched && orderGridData !=null ">
+<div class="row" *ngIf="orderGridData !=null ">
     <div class="col-md-12">
       <table class="table table-sm table-bordered">
         <thead>

@@ -1,0 +1,18 @@
+<div *ngIf="routeParams?.error">
+    <h1>ERROR {{ routeParams?.error }}</h1>
+    <a mat-raised-button [routerLink]="'/'">
+    <h5>Go to Home</h5>
+    </a>
+</div>  
+
+<span  class="myAlert-top" *ngIf="message != null" > 
+    <div class="alert alert-primary" role="alert" *ngIf="message.type=='INFO'">
+             {{message.message}}
+    </div>
+    <div class="alert alert-success" role="alert" *ngIf="message.type=='SUCCESS'">
+            {{message.message}}
+    </div>
+    <div class="alert alert-danger" role="alert" *ngIf="message.type == 'ERROR'">
+            Error: {{message.message}}
+    </div>
+</span>

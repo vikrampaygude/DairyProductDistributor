@@ -22,7 +22,7 @@ export class AppComponent  implements OnInit {
   constructor(public authService: AuthService, public router : Router){
     //localStorage.setItem('host-root', 'http://localhost:5000/');
     localStorage.setItem('host-root', '/');
-    console.log(localStorage.getItem('host-root'));
+    console.log(localStorage.getItem('host-root')); 
   }
   
   isLoggedin(){

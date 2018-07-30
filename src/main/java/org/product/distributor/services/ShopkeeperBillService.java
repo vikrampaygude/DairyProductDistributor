@@ -119,7 +119,7 @@ public class ShopkeeperBillService {
         return null;
     }
 
-    public void deleteByDateAndShopkeeperId(LocalDate date, Long shopkeeperId) {
-        shopkeeperBillRepo.delete(date, shopkeeperId);
+    public void deleteByDate(LocalDate date) {
+        shopkeeperBillRepo.deleteByDate(date);
     }
 }

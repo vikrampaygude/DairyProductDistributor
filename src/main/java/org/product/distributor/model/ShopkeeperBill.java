@@ -31,4 +31,7 @@ public class ShopkeeperBill {
     @Column
     private LocalDate date;
 
+    @Column
+    private Boolean deleted;
+
 }

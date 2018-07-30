@@ -4,6 +4,7 @@ import org.product.distributor.error.exception.InvalidDailyOrderCreateReqExcepti
 import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -50,5 +51,20 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.METHOD_NOT_ALLOWED);
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<ErrorDetails> handleInvalidSessionException(AuthenticationException e, WebRequest webRequest){
+
+        String details = "Creating daily order is not allowed at this point. Only tomorrow order is allowed to create.";
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDate.now());
+        errorDetails.setMessage(e.getMessage());
+        errorDetails.setDetails(details);
+        errorDetails.setErrorCode(ErrorCode.INVALID_AUTHENTICATION);
+        errorDetails.setActions("Login again.");
+
+        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
 
 }
