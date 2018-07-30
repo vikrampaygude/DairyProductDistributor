@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
+                        "/",
                         "/auth/**",
                         "/webjars/**",
                         "/*.html",
