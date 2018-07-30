@@ -6,6 +6,7 @@ import { ProductBrand } from '../product-brand/product-brand';
 import { ProductBrandService } from '../product-brand/product-brand.service';
 import { DistributorArea } from '../distributor-area/distributor-area';
 import { DistributorAreaService } from '../distributor-area/distributor-area.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Component({
   selector: 'app-product-dialog',
@@ -33,7 +34,10 @@ export class ProductDialogComponent implements OnInit {
               this.model.distributorAreaDTOList.push(area);
         })
     })
-    this.service.save(this.model).subscribe(val => this.router.navigate(['/products']));
+    this.service.save(this.model).subscribe(val => {
+      this.router.navigate(['/products']);
+      this.notification.notifySuccess("Product added/updated successfully !")
+    });
     
   }
 
@@ -50,7 +54,8 @@ export class ProductDialogComponent implements OnInit {
   }
   constructor(public service : ProductService, public router : Router, private route: ActivatedRoute,
     public productBrandService : ProductBrandService,
-    public areaService: DistributorAreaService) { 
+    public areaService: DistributorAreaService,
+    public notification: NotificationService) { 
       if(this.route.snapshot.params.id){
         service.getById(this.route.snapshot.params.id).subscribe(obj => {
           this.model = obj;

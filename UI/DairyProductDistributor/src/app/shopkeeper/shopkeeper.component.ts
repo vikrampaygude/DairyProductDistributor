@@ -3,6 +3,7 @@ import {Shopkeeper} from './shopkeeper';
 import {ShopkeeperService} from './shopkeeper.service';
 import { DistributorAreaService } from '../distributor-area/distributor-area.service';
 import { DistributorArea } from '../distributor-area/distributor-area';
+import { NotificationService } from '../notification/notification.service';
 
 @Component({
   selector: 'app-shopkeeper',
@@ -28,7 +29,8 @@ export class ShopkeeperComponent implements OnInit {
   // TODO: Remove this when we're done
   get diagnostic() { return JSON.stringify(this.model); }
 
-  constructor(public service : ShopkeeperService, public distributorAreaService: DistributorAreaService) { 
+  constructor(public service : ShopkeeperService, public distributorAreaService: DistributorAreaService
+  , public notification : NotificationService) { 
     this.distributorAreaService.getAllDistributorAreas().subscribe(data => {
       console.log(data);
       this.distributorAreas= data;
@@ -40,11 +42,14 @@ export class ShopkeeperComponent implements OnInit {
   }
   
   delete(shopkeeper: Shopkeeper){
-    this.service.deleteById(shopkeeper.id).subscribe(res =>{
-      let i = 0;
-      var index = this.shopkeepers.indexOf(shopkeeper);
-      this.shopkeepers.splice(index, 1)
-    });
+    if(confirm("Please confirm to delete shopkeeper.")) {
+      this.service.deleteById(shopkeeper.id).subscribe(res =>{
+        let i = 0;
+        var index = this.shopkeepers.indexOf(shopkeeper);
+        this.shopkeepers.splice(index, 1);
+        this.notification.notifySuccess("Shopkeeper deleted !")
+      });
+    }
   }
 
   newShopkeeper(){

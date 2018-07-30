@@ -75,7 +75,7 @@ export class OrderComponent implements OnInit {
     if(this.distributorAreas){
       this.distributorAreas.forEach(area => {
         if(area.id == this.ordersSearch.distributorAreaId)
-          areaName = area.distributorName
+          areaName = area.name
         
       });
     }

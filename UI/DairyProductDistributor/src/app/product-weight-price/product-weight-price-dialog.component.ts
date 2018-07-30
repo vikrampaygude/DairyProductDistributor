@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ProductWeightPriceService } from './product-weight-price.service';
 import { Product } from '../product/product';
 import { ProductService } from '../product/product.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Component({
   selector: 'app-product-weight-price-dialog',
@@ -17,13 +18,18 @@ export class ProductWeightPriceDialogComponent implements OnInit {
 
   onSubmit() { 
     this.model.productId = this.product.id;
-    this.service.save(this.model).subscribe(val => this.router.navigate(['/product/'+this.product.id+'/weight-price']));
+    this.service.save(this.model).subscribe(val => {
+        this.notification.notifySuccess("Product price by weight saved successfully!");
+        this.router.navigate(['/product/'+this.product.id+'/weight-price']);
+      }
+    );
   }
 
   constructor(public service : ProductWeightPriceService,
     public router : Router,
     private route: ActivatedRoute,
-    public productService: ProductService) { 
+    public productService: ProductService,
+    public notification: NotificationService) { 
 
     this.product = Product.getEmptyObject();
     // if id is present then its edit 

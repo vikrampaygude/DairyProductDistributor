@@ -28,7 +28,7 @@ public class DistributorAreaService {
 
     public List<DistributorAreaDTO> getAll(){
         List<DistributorAreaDTO> distributorAreaDTOList = new ArrayList<>();
-        distributorAreaRepo.findAll().forEach(d -> distributorAreaDTOList.add(distributorAreaMapper.getDistributorAreaDTO(d)));
+        distributorAreaRepo.findAllByOrderByIdAsc().forEach(d -> distributorAreaDTOList.add(distributorAreaMapper.getDistributorAreaDTO(d)));
         return distributorAreaDTOList;
     }
 

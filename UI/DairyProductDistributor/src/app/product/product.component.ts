@@ -3,6 +3,7 @@ import {Product} from './product';
 import {ProductService} from './product.service';
 import { ProductBrandService } from '../product-brand/product-brand.service';
 import { ProductBrand } from '../product-brand/product-brand';
+import { NotificationService } from '../notification/notification.service';
 
 @Component({
   selector: 'app-product',
@@ -30,7 +31,7 @@ export class ProductComponent implements OnInit {
   // TODO: Remove this when we're done
   get diagnostic() { return JSON.stringify(this.model); }
 
-  constructor(public service : ProductService, public brandService: ProductBrandService) {
+  constructor(public service : ProductService, public brandService: ProductBrandService, public notification: NotificationService) {
   }
 
   newProduct(){
@@ -38,11 +39,14 @@ export class ProductComponent implements OnInit {
   }
 
   delete(product: Product){
-    this.service.deleteById(product.id).subscribe(res =>{
-      let i = 0;
-      var index = this.products.indexOf(product);
-      this.products.splice(index, 1)
-    });
+    if(confirm("Please confirm to delete product.")) {
+      this.service.deleteById(product.id).subscribe(res =>{
+        let i = 0;
+        var index = this.products.indexOf(product);
+        this.products.splice(index, 1);
+        this.notification.notifySuccess("Product deleted successfully!")
+      });
+    }
   }
 
 
