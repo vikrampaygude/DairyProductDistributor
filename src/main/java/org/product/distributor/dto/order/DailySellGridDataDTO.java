@@ -59,7 +59,7 @@ public class DailySellGridDataDTO {
 
     public Map<Long, List<OrderProductDTO>> getProductOrderProductMap(){
 
-        Map<Long, List<OrderProductDTO>> productOrderProductDTOMap = new HashMap<>();
+        Map<Long, List<OrderProductDTO>> productOrderProductDTOMap = new LinkedHashMap<>();
 
         for (DailySellRowDataDTO dailySellRowDataDTO : dailySellRowDataDTOList) {
             for (OrderProductDTO orderProductDTO : dailySellRowDataDTO.getOrderProductDTOS()) {

@@ -2,6 +2,7 @@ package org.product.distributor.dto;
 
 import lombok.Data;
 import org.product.distributor.model.Shopkeeper;
+import org.product.distributor.services.UtilService;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,4 +20,18 @@ public class ShopkeeperBillDTO {
     private Double grandDue;
     private LocalDate date;
 
+    public Double getGrandTotal() {
+        grandTotal = UtilService.roundPrice(grandTotal);
+        return grandTotal;
+    }
+
+    public Double getGrandPaid() {
+        grandPaid = UtilService.roundPrice(grandPaid);
+        return grandPaid;
+    }
+
+    public Double getGrandDue() {
+        grandDue = UtilService.roundPrice(grandDue);
+        return grandDue;
+    }
 }

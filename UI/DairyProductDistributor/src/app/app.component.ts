@@ -20,8 +20,8 @@ export class AppComponent  implements OnInit {
   title = 'app';
   
   constructor(public authService: AuthService, public router : Router){
-    localStorage.setItem('host-root', 'http://localhost:5000/');
-    //localStorage.setItem('host-root', '/');
+    //localStorage.setItem('host-root', 'http://localhost:5000/');
+    localStorage.setItem('host-root', '/');
     console.log(localStorage.getItem('host-root')); 
   }
   
