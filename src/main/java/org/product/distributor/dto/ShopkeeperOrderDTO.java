@@ -21,5 +21,6 @@ public class ShopkeeperOrderDTO {
     private Double dueAmount;
     private Long shopkeeperId;
     private String shopkeeperName;
+    private Boolean rowSeparator;
 
 }

@@ -27,11 +27,7 @@ export class AuthService {
 
 
   login(login: Login): any{
-    return this.http.post<any>(this.url+"/login", login).subscribe(response =>{ 
-      localStorage.setItem("id_token",response.access_token);
-      this.router.navigate(['/orders']);
-
-    });
+    return this.http.post<any>(this.url+"/login", login);
   }
 
   logout(){

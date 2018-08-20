@@ -20,14 +20,16 @@ public interface ShopkeeperOrderMapper {
 
     @Mappings({
             @Mapping(source = "shopkeeper.id", target = "shopkeeperId"),
-            @Mapping(source = "shopkeeper.name", target = "shopkeeperName")
+            @Mapping(source = "shopkeeper.name", target = "shopkeeperName"),
+            @Mapping(source = "shopkeeper.rowSeparator", target="rowSeparator")
     })
     ShopkeeperOrderDTO getShopkeeperOrderDTO(ShopkeeperOrder shopkeeperOrder);
 
 
     @Mappings({
             @Mapping(target = "shopkeeper.id",  source = "shopkeeperId"),
-            @Mapping(target = "shopkeeper.name", source = "shopkeeperName")
+            @Mapping(target = "shopkeeper.name", source = "shopkeeperName"),
+            @Mapping(target = "shopkeeper.rowSeparator", source="rowSeparator")
     })
     ShopkeeperOrder getShopkeeperOrder(ShopkeeperOrderDTO shopkeeperOrderDTO);
 

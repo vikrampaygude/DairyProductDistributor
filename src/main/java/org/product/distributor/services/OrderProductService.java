@@ -43,6 +43,9 @@ public class OrderProductService {
     private ShopkeeperOrderService shopkeeperOrderService;
 
     @Autowired
+    private ProductService productService;
+
+    @Autowired
     private ProductWeightPriceRepo productWeightPriceRepo;
 
     @Autowired
@@ -155,11 +158,8 @@ public class OrderProductService {
             productList.forEach(product -> {
                 OrderProduct orderProduct = OrderProduct.getObject(product, shopkeeperOrder);
 
-                ShopkeeperCustomPrice  shopkeeperCustomPrice = getProductCustomPrice(product, shopkeeperOrder.getId());
-                if(shopkeeperCustomPrice!=null)
-                    orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
+                setSellingPrice(orderProduct, shopkeeperOrder);
 
-                orderProduct.setShopkeeperCustomPrice(shopkeeperCustomPrice);
                 orderProductList.add(orderProduct);
 
             });
@@ -178,6 +178,17 @@ public class OrderProductService {
         return shopkeeperCustomPrice.orElse(null);
     }
 
+    public void setSellingPrice(OrderProduct orderProduct, ShopkeeperOrder shopkeeperOrder ){
+        ShopkeeperCustomPrice shopkeeperCustomPrice = getProductCustomPrice(orderProduct.getProduct(), shopkeeperOrder.getId());
+        if (shopkeeperCustomPrice != null) // if has a custom price set it
+            orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
+        else if(orderProduct.getProductWeightPrice() !=null) // if price is by weight then set it
+            orderProduct.setSellingPrice(orderProduct.getProductWeightPrice().getSellingPrice());
+        else// otherwise set price by area or default
+            orderProduct.setSellingPrice(productService.getProductPrice(orderProduct.getProduct(), shopkeeperOrder.getDistributorArea().getId()));
+
+    }
+
 
     public void applyLatestPrices(Long distributorAreaId, LocalDate localDate) {
         List<ShopkeeperOrder> shopkeepersOrderList = shopkeeperOrderRepo.findActiveByDistributorAreaAndDate(localDate, distributorAreaId);
@@ -188,13 +199,7 @@ public class OrderProductService {
 
             Double totalPrices = 0.0;
             for (OrderProduct orderProduct : orderProductList) {
-                ShopkeeperCustomPrice shopkeeperCustomPrice = getProductCustomPrice(orderProduct.getProduct(), shopkeeperOrder.getId());
-                if (shopkeeperCustomPrice != null)
-                    orderProduct.setSellingPrice(shopkeeperCustomPrice.getPrice());
-
-
-                orderProduct.setSellingPrice( getProductSellingPrice(orderProduct) );
-
+                setSellingPrice(orderProduct, shopkeeperOrder);
                 totalPrices += (orderProduct.getQuantity() * orderProduct.getSellingPrice());
             }
 
@@ -211,6 +216,7 @@ public class OrderProductService {
             shopkeeperOrderService.calculateAndSaveOrderBill(shopkeeperOrder.getId());
         }
     }
+
 
     public Double getProductSellingPrice(OrderProduct orderProduct){
         if(orderProduct.getProductWeightPrice() !=null)
@@ -244,7 +250,7 @@ public class OrderProductService {
             List<OrderProduct> orderProducts = orderProductList.stream()
                     .filter(orderProductPredicate)
                     .collect(Collectors.toList());
-            loadWeightPrice(orderProducts);
+            loadWeightPrice(orderProducts);//lazy load
 
 
             DailySellRowDataDTO dailySellRowDataDTO = dailySellRowDataMapper.getDailySellRowDataDTO(shopkeeperOrder

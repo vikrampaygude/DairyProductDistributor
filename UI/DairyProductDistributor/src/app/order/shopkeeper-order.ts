@@ -8,10 +8,11 @@ export class ShopkeeperOrder {
         public paidAmount : number,
         public dueAmount  : number,
         public shopkeeperId : number,
-        public shopkeeperName : string
+        public shopkeeperName : string,
+        public rowSeparator : string
       ) {  }
   
       public static getEmptyObject(): ShopkeeperOrder{
-        return new ShopkeeperOrder(0,null,null,0,0,0,0,null);
+        return new ShopkeeperOrder(0,null,null,0,0,0,0,null, null);
       }  
   }

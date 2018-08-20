@@ -45,11 +45,14 @@ export class ProductDialogComponent implements OnInit {
     this.distributorAreaCheckList.forEach(distAreaCheck =>
     {
       this.model.distributorAreaDTOList && this.model.distributorAreaDTOList.forEach(distAreaM => {
-        if((distAreaM.id == distAreaCheck.id)){
+        console.log(distAreaM.id +"=="+ distAreaCheck.id);
+        if(distAreaM.id === distAreaCheck.id){
           distAreaCheck.checked = true;
+          return;
         }
         
       })
+      console.log(distAreaCheck.checked);
     });
   }
   constructor(public service : ProductService, public router : Router, private route: ActivatedRoute,

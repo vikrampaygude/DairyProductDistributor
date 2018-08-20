@@ -7,4 +7,9 @@ export class OrderGridRowdata {
     billTotalPrice: number;
     billPaidPrice: number;
     billDuePrice: number;
+
+
+    public static getInstance(): OrderGridRowdata{
+        return new OrderGridRowdata();
+    }
 }

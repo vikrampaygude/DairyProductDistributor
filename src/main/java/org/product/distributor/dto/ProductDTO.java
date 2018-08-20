@@ -23,5 +23,6 @@ public class ProductDTO {
 
     private List<ProductWeightPriceDTO> productWeightPriceDTOList;
     private List<DistributorAreaDTO> distributorAreaDTOList;
+    private List<ProductAreaPriceDTO> productAreaPriceDTOList;
 
 }

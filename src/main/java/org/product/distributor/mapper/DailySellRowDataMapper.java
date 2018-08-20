@@ -30,7 +30,9 @@ public interface DailySellRowDataMapper {
 
     @Mappings({
             @Mapping(source = "shopkeeper.id", target = "shopkeeperId"),
-            @Mapping(source = "shopkeeper.name", target = "shopkeeperName")
+            @Mapping(source = "shopkeeper.name", target = "shopkeeperName"),
+            @Mapping(source = "shopkeeper.rowSeparator", target = "rowSeparator")
+
     })
     ShopkeeperOrderDTO map(ShopkeeperOrder shopkeeperOrder);
 

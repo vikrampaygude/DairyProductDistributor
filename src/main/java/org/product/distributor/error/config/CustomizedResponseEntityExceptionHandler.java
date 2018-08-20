@@ -4,6 +4,7 @@ import org.product.distributor.error.exception.InvalidDailyOrderCreateReqExcepti
 import org.product.distributor.error.exception.InvalidDailyOrderDeleteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +62,20 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
         errorDetails.setMessage(e.getMessage());
         errorDetails.setDetails(details);
         errorDetails.setErrorCode(ErrorCode.INVALID_AUTHENTICATION);
+        errorDetails.setActions("Login again.");
+
+        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public final ResponseEntity<ErrorDetails> invalidCredentials(AuthenticationException e, WebRequest webRequest){
+
+        String details = "Invalid username or password provided.";
+        ErrorDetails errorDetails = new ErrorDetails();
+        errorDetails.setTimestamp(LocalDate.now());
+        errorDetails.setMessage(e.getMessage());
+        errorDetails.setDetails(details);
+        errorDetails.setErrorCode(ErrorCode.INVALID_CREDENTIAL);
         errorDetails.setActions("Login again.");
 
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.UNAUTHORIZED);

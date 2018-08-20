@@ -17,6 +17,9 @@ import { ProductWeightPriceService } from '../product-weight-price/product-weigh
 import { CustomPrice } from '../custom-price/custom-price';
 import { CustomPriceService } from '../custom-price/custom-price.service';
 import { NotificationService } from '../notification/notification.service';
+import { ProductAreaPrice } from './product-area-price';
+import { ProductAreaPriceService } from './product-area-price.service';
+import { OrderGridRowdata } from './order-grid-rowdata';
 
 
 @Component({
@@ -39,31 +42,51 @@ export class OrderComponent implements OnInit {
   shopkeepers: Shopkeeper[];
   products : Product[];
   productWeightPrices : ProductWeightPrice[];
+  prodAreaPrice: ProductAreaPrice;
 
   toggleAddByWeight : boolean = false;
   toggleCustomPrice : boolean = false;
+  toggleAreaPrice : boolean = false;
+  
   customPrice : CustomPrice;
   loading : boolean = false;
+  headerCount: number =11;
 
   onSubmit() { 
     this.loading = true;
     this.service.getDayOrders(this.ordersSearch).subscribe(data => {
         //this.orderGridData= new OrderGridData();
         this.orderGridData = data;
-        console.log(this.orderGridData)
         Object.assign(this.orderPrintGridData, this.orderGridData);
         this.loading = false;
         this.searched = true;
+        this.addLineSeparator();
       });
        this.setShopkeepers();
        this.setProducts();
     //this.service.getAllOrders().subscribe(Orders => this.Orders = Orders);
   }
 
+  addLineSeparator(){
+    var i = 0;
+    let addLineAt = [];
+    if(this.orderGridData == null) return;
+
+    for(let shopkeeperOrder of this.orderGridData.dailySellRowDataDTOList){
+
+      if(shopkeeperOrder.shopkeeperOrderDTO.rowSeparator){
+        addLineAt.push(i+1);
+      }          
+      i++;
+    }
+    for(let num of addLineAt){
+      this.orderGridData.dailySellRowDataDTOList.splice(num, 0, OrderGridRowdata.getInstance());//add empty instance
+    }
+    this.headerCount = this.orderGridData.productDTOS.length + 4;
+  }
+
   createDailyOrder(){
-    console.log("Daily order click");
     this.service.createEmptyDailyOrder(this.ordersSearch).subscribe(obj => {
-      console.log(obj);
       this.onSubmit();
       this.notificationService.notifySuccess("Todays order created successfully !");
 
@@ -80,6 +103,29 @@ export class OrderComponent implements OnInit {
       });
     }
     return areaName;
+  }
+
+  showAreaPrice(product: Product){
+    console.log(product);
+    this.prodAreaPrice = ProductAreaPrice.getInstance();
+    this.prodAreaPrice.id = null;
+    this.prodAreaPrice.productId = product.id;
+    this.prodAreaPrice.productName = product.name;
+    this.prodAreaPrice.areaId = this.ordersSearch.distributorAreaId;
+    this.prodAreaPrice.price = product.sellingPrice;
+
+    this.toggleAreaPrice = true;
+    // = new ProductAreaPrice(null,product.id, this.ordersSearch.distributorAreaId, );
+  }
+
+  areaPriceFormOnSubmit(){
+
+    this.prodAreaPrice.date = this.datePipe.transform(this.ordersSearch.date, 'dd/MM/yyyy');;
+    this.productAreaPriceService.save(this.prodAreaPrice).subscribe(res => {
+      this.notificationService.notifySuccess("Price saved!")
+      this.prodAreaPrice = ProductAreaPrice.getInstance();
+    });   
+    this.toggleAreaPrice = false;
   }
 
   deleteDayOrder(){
@@ -196,7 +242,8 @@ export class OrderComponent implements OnInit {
     , public shopkeeperService: ShopkeeperService
     , public productWeightPriceService: ProductWeightPriceService
     , public customPriceService : CustomPriceService
-    , public notificationService: NotificationService) {
+    , public notificationService: NotificationService
+    , public productAreaPriceService: ProductAreaPriceService) {
 
     this.distributorAreaService.getAllDistributorAreas().subscribe(areas => {
       this.distributorAreas = areas;
@@ -218,6 +265,23 @@ export class OrderComponent implements OnInit {
       this.onSubmit();
    }
 
+   getProductPrice(product: Product){
+    let price = product.sellingPrice;
+    if(product.productAreaPriceDTOList) {
+      this.orderGridData.dailySellRowDataDTOList.forEach(row =>{
+        if(row.orderProductDTOS){  
+          row.orderProductDTOS.forEach(orderProduct=>{
+            if(product.id == orderProduct.productId 
+              && orderProduct.productWeightPriceId == null 
+              && orderProduct.customPriceId ==null){
+                price = orderProduct.sellingPrice;
+              }
+          })
+        }
+      });
+    }  
+    return price;
+   }
 
    print(): void {
     let printContents, popupWin;
@@ -228,9 +292,30 @@ export class OrderComponent implements OnInit {
       <html>
         <head>
           <title>${this.getDistributorName()} ${this.ordersSearch.date}</title>
-          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
           <style>
-          </style>
+      @media all {    
+        table {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        table td, th {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+        
+        table tr:nth-child(even){background-color: #f2f2f2;}
+        
+        table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #e9ecef;
+        }
+      }
+        
+        </style>
         </head>
     <body onload="window.print();window.close()">${printContents}</body>
       </html>`

@@ -33,4 +33,7 @@ public class Shopkeeper {
     @OneToOne
     private DistributorArea distributorArea;
 
+    @Column
+    private Boolean rowSeparator;
+
 }

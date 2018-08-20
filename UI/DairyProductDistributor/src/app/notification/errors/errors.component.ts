@@ -20,7 +20,6 @@ export class ErrorsComponent implements OnInit {
   ) { 
     notificationService.notification$.subscribe(message => {
       this.message = message
-      console.log(this.message);
     });
   }
 

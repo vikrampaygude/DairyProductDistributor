@@ -1,39 +1,27 @@
-<form class="form-horizontal" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+<form class="form-horizontal col-md-6 center" (ngSubmit)="onSubmit()" #loginForm="ngForm">
     <div class="row">
-        <div class="col-md-3"></div>
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h2>Login</h2>
             <hr>
+            <div class="form-group" style="margin-left: 2.6em">
+                    <span class="alert alert-danger" *ngIf="message !=null">{{message}}</span>            
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3 field-label-responsive">
-            <label for="password">Username</label>
-        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                     <div class="input-group-addon" style="width: 2.6rem">
-                        <i class="fa fa-repeat"></i>
+                            <i class="fa fa-user" aria-hidden="true"></i>
                     </div>
                     <input type="text" required [(ngModel)]="login.username" #username="ngModel" name="username" class="form-control"
                            id="username" placeholder="username" required>
                 </div>
             </div>
         </div>
-        <!-- <div class="col-md-3">
-            <div class="form-control-feedback">
-                <div [hidden]="confirmPassword.valid || confirmPassword.pristine"
-                class="alert alert-danger">
-                    Confirm Password is required
-                </div>
-            </div>
-        </div> -->
     </div>
     <div class="row">
-        <div class="col-md-3 field-label-responsive">
-            <label for="password">Password</label>
-        </div>
         <div class="col-md-6">
             <div class="form-group has-danger">
                 <div class="input-group mb-2 mr-sm-2 mb-sm-0">
@@ -43,19 +31,13 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="col-md-3">
-            <div class="form-control-feedback">
-                <div [hidden]="password.valid || password.pristine"
-                class="alert alert-danger">
-                    Password is required
-                </div>
-            </div>
-        </div>-->
     </div>
     <div class="row">
-        <div class="col-md-3"></div><!--  [disabled]="!productForm.form.valid" -->
         <div class="col-md-6">
-            <button type="submit" class="btn btn-success">Login</button>
+            <button type="submit" class="btn btn-success" style="margin-left: 2.6em">
+                <i class="fas fa-spinner fa-spin fa-1x fa-fw " *ngIf="loading == true" align="center"></i>
+                Login
+            </button>            
         </div>
     </div>
 </form>

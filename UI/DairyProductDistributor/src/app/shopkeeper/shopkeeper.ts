@@ -8,7 +8,8 @@ export class Shopkeeper {
         public distributorAreaId: number ,
         public distributorName: string ,
         public distributorId: number,
-        public uiSequence: number
+        public uiSequence: number,
+        public rowSeparator: boolean
           ) {  }
   
   }

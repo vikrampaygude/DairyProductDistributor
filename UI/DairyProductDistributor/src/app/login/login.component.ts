@@ -1,8 +1,7 @@
 import { OnInit, Component } from "@angular/core";
 import { Login } from "./login";
 import { AuthService } from "../auth/auth.service";
-
-
+import { Router } from "@angular/router";
 
 @Component({
     selector:'login',
@@ -11,8 +10,9 @@ import { AuthService } from "../auth/auth.service";
 export class LoginComponent implements OnInit{
 
     login: Login = new Login();
-
-    constructor(public authServie: AuthService){
+    loading : boolean = false;
+    message : string;
+    constructor(public authServie: AuthService, private router: Router){
 
     }
 
@@ -27,7 +27,18 @@ export class LoginComponent implements OnInit{
     }
 
     onSubmit(){
-        this.authServie.login(this.login);        
-    }
+        this.loading = true;
 
+        this.authServie.login(this.login).subscribe(response =>{ 
+            localStorage.setItem("id_token",response.access_token);
+            this.router.navigate(['/orders']);
+            this.loading = false;
+        },
+        errResp => {
+            this.loading = false;
+            this.message = errResp.error.details;
+            console.log(this.message)
+            setTimeout(() => this.message = null, 12000);
+       });
+    }
 }

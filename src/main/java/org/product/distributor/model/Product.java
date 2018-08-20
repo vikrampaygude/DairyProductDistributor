@@ -62,5 +62,10 @@ public class Product {
 
     @Column
     private Boolean deleted;
+
+    @OneToMany(fetch = FetchType.EAGER,
+            mappedBy = "product"
+    )
+    private List<ProductAreaPrice> productAreaPrices;
 }
 

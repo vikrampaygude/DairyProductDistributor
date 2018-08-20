@@ -19,6 +19,6 @@ public class ShopkeeperDTO {
     private String distributorName;
     private Long distributorId;
     private Integer uiSequence;
-
+    private Boolean rowSeparator;
 
 }
