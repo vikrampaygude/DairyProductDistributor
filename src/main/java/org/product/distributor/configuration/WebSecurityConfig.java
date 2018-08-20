@@ -68,13 +68,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
+                        "/",
                         "/auth/**",
                         "/webjars/**",
                         "/*.html",
                         "/favicon.ico",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js"
+                        "/**/*.js",
+                        "/fa-solid*"
                 ).permitAll()
                 .antMatchers("/api/auth/**","/h2-console/**").permitAll()
                 .anyRequest().authenticated().and()
@@ -93,14 +95,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         );
         web.ignoring().antMatchers(
                 HttpMethod.GET,
-                "/",
                 "/webjars/**",
                 "/*.html",
                 "/favicon.ico",
                 "/**/*.html",
                 "/**/*.css",
-                "/**/*.js"
-            );
+                "/**/*.js");
 
     }
 }
