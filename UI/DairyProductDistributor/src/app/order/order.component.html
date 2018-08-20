@@ -164,11 +164,11 @@
           <tr class="header-background">
             <th>Shopkeepers</th>
             <th *ngFor="let product of orderGridData.productDTOS">
-              {{product.shortName}} ( <u (click)="showAreaPrice(product)">
-                <i title="set selling price" style="color: blue;cursor:pointer;font-size: small;" class="pl-2">
+              {{product.shortName}} 
+              ( <u (click)="showAreaPrice(product)"><i title="set selling price" style="color: blue;cursor:pointer;font-size: small;">
                   {{getProductPrice(product)}}
                 </i>
-                </u>  )
+                </u> )
 
             </th>
             <th>Total Amount</th>
