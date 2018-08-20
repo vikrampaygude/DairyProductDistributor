@@ -1,6 +1,7 @@
 package org.product.distributor.mapper;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.product.distributor.dto.DistributorAreaDTO;
 import org.product.distributor.dto.ProductDTO;
@@ -22,6 +23,7 @@ public class ProductMapperTest {
     private ProductMapper productMapper = ProductMapper.INSTANCE;
 
     @Test
+    @Ignore
     public void getProductDTOTest(){
         //given
         Product product = new Product();
